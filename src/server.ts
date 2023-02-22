@@ -6,6 +6,9 @@ import { routes } from './routes/index.route'
 import { Env } from './config'
 import path from 'path'
 import Logger from './@loggers/logger.pino'
+import { restResponseTimeHistogram, startMetricsServer } from './utils/metrics'
+import responseTime from 'response-time'
+import swaggerDocs from './utils/swagger'
 
 class Server {
   public app: express.Application = express()
@@ -15,6 +18,21 @@ class Server {
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))
     this.app.use(morgan('dev'))
+
+    this.app.use(
+      responseTime((req: Request, res: Response, time: number) => {
+        if (req?.route?.path) {
+          restResponseTimeHistogram.observe(
+            {
+              method: req.method,
+              route: req.route.path,
+              status_code: res.statusCode
+            },
+            time * 1000
+          )
+        }
+      })
+    )
 
     this.app.use(
       cors({
@@ -48,9 +66,9 @@ class Server {
 
   public listen(port: number): void {
     this.app.listen(port, () => {
-      Logger.info(
-        `http://localhost:${port}/`
-      )
+      Logger.info(`[Server_Start:::] http://localhost:${port}/`)
+      swaggerDocs(this.app, port)
+      startMetricsServer()
     })
   }
 }
