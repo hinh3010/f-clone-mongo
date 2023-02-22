@@ -11,12 +11,14 @@ class TestsRouter {
   }
 
   routes(): void {
+    const { testsCtl } = this
+
     this.router.route('/tests')
-      .get(this.testsCtl.testApi)
+      .get(testsCtl.testApi)
 
     this.router
-      .get('/adu', this.testsCtl.testApi)
-      .get('/adu2', this.testsCtl.testApi)
+      .get('/adu', testsCtl.testApi)
+      .get('/adu2', testsCtl.testApi)
   }
 }
 

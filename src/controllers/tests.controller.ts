@@ -1,6 +1,6 @@
 
 import { type Request, type Response } from 'express'
-import catchAsync from '../utils/catchAsync'
+import catchAsync from '../middlewares/catchAsync'
 
 export class TestsController {
   testApi = catchAsync(
