@@ -1,24 +1,25 @@
 import { createClient } from 'redis'
+import Logger from '../@loggers/logger.pino'
 
 const redisClient = createClient({
   url: 'redis://alice:foobared@awesome.redis.server:6380'
 })
 
 redisClient.on('error', (err) => {
-  console.log('[Redis:::] client Error', err.message)
+  Logger.error('[Redis:::] client Error', err.message)
   throw err
 })
 
 redisClient.on('connect', function () {
-  console.log('[Redis:::] connected!!')
+  Logger.info('[Redis:::] connected!!')
 })
 
 redisClient.on('ready', function () {
-  console.log('[Redis:::] ready!!')
+  Logger.info('[Redis:::] ready!!')
 })
 
 redisClient.on('end', () => {
-  console.log('[Redis:::] client disconnected')
+  Logger.info('[Redis:::] client disconnected')
 })
 
 export const redisDbConnect = async (): Promise<void> => {
@@ -26,9 +27,9 @@ export const redisDbConnect = async (): Promise<void> => {
     await redisClient.connect()
   } catch (err: unknown) {
     if (err instanceof Error) {
-      console.log(`[Redis:::] failed to connect!! - ${err.message}`)
+      Logger.error(`[Redis:::] failed to connect!! - ${err.message}`)
     } else {
-      console.log(`[Redis:::] failed to connect!! - ${err}`)
+      Logger.error(`[Redis:::] failed to connect!! - ${err}`)
     }
     throw new Error('[Redis:::] failed to connect!!')
   }

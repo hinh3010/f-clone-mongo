@@ -5,6 +5,7 @@ import 'reflect-metadata'
 import { routes } from './routes/index.route'
 import { Env } from './config'
 import path from 'path'
+import Logger from './@loggers/logger.pino'
 
 class Server {
   public app: express.Application = express()
@@ -47,7 +48,7 @@ class Server {
 
   public listen(port: number): void {
     this.app.listen(port, () => {
-      console.log(
+      Logger.info(
         `http://localhost:${port}/`
       )
     })
