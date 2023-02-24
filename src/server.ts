@@ -9,11 +9,13 @@ import Logger from './@loggers/logger.pino'
 import { restResponseTimeHistogram, startMetricsServer } from './utils/metrics'
 import responseTime from 'response-time'
 import swaggerDocs from './utils/swagger'
+import mongooseDbConnect from './databases/mongo.db'
 
 class Server {
   public app: express.Application = express()
 
   constructor() {
+    void mongooseDbConnect()
     this.app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: 31557600000 }))
     this.app.use(express.json())
     this.app.use(express.urlencoded({ extended: true }))

@@ -7,5 +7,16 @@ export const Env = {
   PORT: process.env.PORT,
   PROJECT_NAME: '',
   NODE_ENV,
-  MONGO_URI: process.env.MONGO_URI
+  MONGO_CONNECTION: {
+    URI: process.env.MONGO_URI ?? '',
+    OPTIONS: {
+      // useCreateIndex: true,
+      // poolSize: 10
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      ssl: true,
+      sslValidate: true,
+      dbName: 'platform'
+    }
+  }
 }
