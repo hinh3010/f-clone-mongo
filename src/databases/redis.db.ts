@@ -1,38 +1,59 @@
 import { createClient } from 'redis'
 import Logger from '../@loggers/logger.pino'
+import { Env } from '../config'
 
-const redisClient = createClient({
-  url: 'redis://alice:foobared@awesome.redis.server:6380'
+export const RedisClient = createClient({
+  url: Env.REDIS_CONNECTION.URI
 })
 
-redisClient.on('error', (err) => {
-  Logger.error('[Redis:::] client Error', err.message)
+RedisClient.on('error', (err) => {
+  Logger.error(`[Redis:::] client Error - ${err.message}`)
   throw err
 })
 
-redisClient.on('connect', function () {
-  Logger.info('[Redis:::] connected!!')
-})
-
-redisClient.on('ready', function () {
-  Logger.info('[Redis:::] ready!!')
-})
-
-redisClient.on('end', () => {
-  Logger.info('[Redis:::] client disconnected')
-})
-
-export const redisDbConnect = async (): Promise<void> => {
-  try {
-    await redisClient.connect()
-  } catch (err: unknown) {
+RedisClient.connect()
+  .catch((err: unknown) => {
     if (err instanceof Error) {
       Logger.error(`[Redis:::] failed to connect!! - ${err.message}`)
     } else {
       Logger.error(`[Redis:::] failed to connect!! - ${err}`)
     }
     throw new Error('[Redis:::] failed to connect!!')
-  }
-}
+  })
 
-export default redisClient
+RedisClient.on('connect', function () {
+  Logger.info('[Redis:::] connected!!')
+})
+
+RedisClient.on('ready', function () {
+  Logger.info('[Redis:::] ready!!')
+})
+
+RedisClient.on('end', () => {
+  Logger.info('[Redis:::] client disconnected')
+})
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+process.on('SIGINT', async () => {
+  await RedisClient.disconnect()
+  process.exit(0)
+})
+
+// eslint-disable-next-line @typescript-eslint/no-misused-promises
+process.on('SIGTERM', async () => {
+  await RedisClient.disconnect()
+  process.exit(0)
+})
+
+// export const redisDbConnect = async (): Promise<void> => {
+//   try {
+//     await redisClient.connect()
+//   } catch (err: unknown) {
+//     if (err instanceof Error) {
+//       Logger.error(`[Redis:::] failed to connect!! - ${err.message}`)
+//     } else {
+//       Logger.error(`[Redis:::] failed to connect!! - ${err}`)
+//     }
+//     throw new Error('[Redis:::] failed to connect!!')
+//   }
+// }
