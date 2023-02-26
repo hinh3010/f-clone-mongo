@@ -2,7 +2,7 @@ import Redis from 'ioredis'
 import Logger from '../@loggers/logger.pino'
 import { Env } from '../config'
 
-export const RedisIo = new Redis({
+export const RedisIoClient = new Redis({
   host: Env.REDIS_CONNECTION.HOST,
   port: Env.REDIS_CONNECTION.PORT,
   password: Env.REDIS_CONNECTION.PASSWORD,
@@ -18,26 +18,26 @@ export const RedisIo = new Redis({
   }
 })
 
-RedisIo.on('connect', () => {
+RedisIoClient.on('connect', () => {
   Logger.info('[RedisIo:::] connected!!')
 })
 
-RedisIo.on('error', (err) => {
+RedisIoClient.on('error', (err) => {
   Logger.error(`[RedisIo:::] client Error ${err}`)
 })
 
-RedisIo.on('ready', function () {
+RedisIoClient.on('ready', function () {
   Logger.info('[RedisIo:::] ready!!')
 })
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 process.on('SIGINT', async () => {
-  RedisIo.disconnect()
+  RedisIoClient.disconnect()
   process.exit(0)
 })
 
 // eslint-disable-next-line @typescript-eslint/no-misused-promises
 process.on('SIGTERM', async () => {
-  RedisIo.disconnect()
+  RedisIoClient.disconnect()
   process.exit(0)
 })

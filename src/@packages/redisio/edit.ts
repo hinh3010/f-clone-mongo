@@ -1,5 +1,4 @@
 import type Redis from 'ioredis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -10,8 +9,6 @@ import _formatKey from './_formatKey'
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
 async function edit(client: Redis, key: string, value: any, expiration?: number): Promise<boolean> {
-  const redisKey = _formatKey(key)
-
   let redisValue: string
 
   if (typeof value === 'number' && isNaN(value)) {
@@ -27,13 +24,13 @@ async function edit(client: Redis, key: string, value: any, expiration?: number)
   try {
     let reply: any
     if (expiration) {
-      reply = await client.set(redisKey, redisValue, 'EX', expiration, 'XX')
+      reply = await client.set(key, redisValue, 'EX', expiration, 'XX')
     } else {
-      const ttl = await client.ttl(redisKey)
+      const ttl = await client.ttl(key)
       if (ttl > 0) {
-        reply = await client.set(redisKey, redisValue, 'EX', ttl, 'XX')
+        reply = await client.set(key, redisValue, 'EX', ttl, 'XX')
       } else {
-        reply = await client.set(redisKey, redisValue, 'XX')
+        reply = await client.set(key, redisValue, 'XX')
       }
     }
     return reply === 'OK'

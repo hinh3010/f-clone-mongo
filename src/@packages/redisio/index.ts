@@ -5,8 +5,8 @@ import getTTL from './getTTL'
 import getMulti from './getMulti'
 import edit from './edit'
 
-const Redis = {
+const RedisIo = {
   set, get, del, getTTL, getMulti, edit
 }
 
-export default Redis
+export default RedisIo

@@ -1,5 +1,4 @@
 import { type RedisClientType } from 'redis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -10,9 +9,6 @@ import _formatKey from './_formatKey'
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
 async function set(client: RedisClientType, key: string, value: any, expiration?: number): Promise<boolean> {
-  const redisKey = _formatKey(key)
-  // const redisValue = typeof value === 'string' ? value : JSON.stringify(value)
-
   let redisValue: string
 
   if (typeof value === 'number' && isNaN(value)) {
@@ -28,12 +24,12 @@ async function set(client: RedisClientType, key: string, value: any, expiration?
   try {
     const reply = expiration
       ? await client.setEx(
-        redisKey,
+        key,
         expiration, // Thời gian tồn tại
         redisValue
       )
       : await client.set(
-        redisKey,
+        key,
         redisValue
       )
     return reply === 'OK'

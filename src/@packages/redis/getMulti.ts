@@ -1,5 +1,4 @@
 import { type RedisClientType } from 'redis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -9,9 +8,8 @@ import _formatKey from './_formatKey'
  */
 
 async function getMulti(client: RedisClientType, keys: string[]): Promise<string | null> {
-  const redisKeys = keys.map(key => _formatKey(key))
   try {
-    const redisValues = await client.mGet(redisKeys)
+    const redisValues = await client.mGet(keys)
 
     let values: any = null
 

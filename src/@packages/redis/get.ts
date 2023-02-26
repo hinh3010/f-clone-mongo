@@ -1,5 +1,4 @@
 import { type RedisClientType } from 'redis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -9,10 +8,8 @@ import _formatKey from './_formatKey'
  */
 
 async function get(client: RedisClientType, key: string): Promise<string | null> {
-  const redisKey = _formatKey(key)
-
   try {
-    const redisValue = await client.get(redisKey)
+    const redisValue = await client.get(key)
 
     let value: any = null
 

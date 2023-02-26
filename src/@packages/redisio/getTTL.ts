@@ -1,5 +1,4 @@
 import type Redis from 'ioredis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -9,12 +8,10 @@ import _formatKey from './_formatKey'
  */
 
 async function getTTL(client: Redis, key: string): Promise<any> {
-  const redisKey = _formatKey(key)
-
   try {
     const multi = client.multi()
-    multi.get(redisKey)
-    multi.ttl(redisKey)
+    multi.get(key)
+    multi.ttl(key)
     const results = await multi.exec()
 
     if (!results) {

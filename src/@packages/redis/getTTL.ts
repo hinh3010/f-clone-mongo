@@ -1,5 +1,4 @@
 import { type RedisClientType } from 'redis'
-import _formatKey from './_formatKey'
 
 /**
  * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
@@ -9,10 +8,8 @@ import _formatKey from './_formatKey'
  */
 
 async function getTTL(client: RedisClientType, key: string): Promise<number | null> {
-  const redisKey = _formatKey(key)
-
   try {
-    return await client.ttl(redisKey)
+    return await client.ttl(key)
   } catch (error) {
     return null
   }
