@@ -14,8 +14,6 @@ import helmet from 'helmet'
 import mongoSanitize from 'express-mongo-sanitize'
 import xss from 'xss-clean'
 import compression from 'compression'
-import { RedisClient } from './databases/redis.db'
-import { RedisIo } from './databases/redisio.db'
 import PromiseBlueBird from './utils/bluebird'
 
 async function connectDb(): Promise<void> {
@@ -24,19 +22,6 @@ async function connectDb(): Promise<void> {
     import('./databases/redis.db'),
     import('./databases/redisio.db')
   ])
-}
-
-async function testRedis(): Promise<void> {
-  await RedisClient.set('ping', 'pong', {
-    EX: 10,
-    NX: true
-  })
-  Logger.warn(`[Redis:::] ping ${await RedisClient.get('ping')}`)
-}
-
-async function testRedisIo(): Promise<void> {
-  await RedisIo.set('ping_io', 'pong')
-  Logger.warn(`[RedisIo:::] ping ${await RedisClient.get('ping_io')}`)
 }
 
 class Server {
@@ -109,12 +94,10 @@ class Server {
   public listen(port: number): void {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     this.app.listen(port, async () => {
+      await connectDb()
       Logger.info(`[Server_Start:::] http://localhost:${port}/`)
       swaggerDocs(this.app, port)
       startMetricsServer()
-      await connectDb()
-      await testRedis()
-      await testRedisIo()
     })
   }
 }

@@ -44,16 +44,3 @@ process.on('SIGTERM', async () => {
   await RedisClient.disconnect()
   process.exit(0)
 })
-
-// export const redisDbConnect = async (): Promise<void> => {
-//   try {
-//     await redisClient.connect()
-//   } catch (err: unknown) {
-//     if (err instanceof Error) {
-//       Logger.error(`[Redis:::] failed to connect!! - ${err.message}`)
-//     } else {
-//       Logger.error(`[Redis:::] failed to connect!! - ${err}`)
-//     }
-//     throw new Error('[Redis:::] failed to connect!!')
-//   }
-// }
