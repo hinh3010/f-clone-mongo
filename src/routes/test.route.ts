@@ -1,5 +1,6 @@
 import { type Request, type Response, Router } from 'express'
 import { TestsController } from '../controllers/tests.controller'
+
 class TestsRouter {
   public router: Router
 

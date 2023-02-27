@@ -27,5 +27,6 @@ export const Env = {
     USERNAME: process.env.REDIS_USERNAME,
     OPTIONS: {
     }
-  }
+  },
+  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre'
 }

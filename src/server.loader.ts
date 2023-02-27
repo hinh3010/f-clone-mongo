@@ -10,8 +10,12 @@ import responseTime from 'response-time'
 import xss from 'xss-clean'
 import { Env } from './config'
 import mongooDbConnect from './databases/mongo.db'
+import { RedisIoClient } from './databases/redisio.db'
 import PromiseBlueBird from './utils/bluebird'
 import { restResponseTimeHistogram } from './utils/metrics'
+import connectRedis from 'connect-redis'
+
+const RedisStore = connectRedis(session)
 
 async function connectDb(): Promise<void> {
   await PromiseBlueBird.all([
@@ -71,13 +75,16 @@ export async function serverLoader(app: express.Application): Promise<void> {
 
   // session
   app.use(session({
-    secret: 'keyboard cat',
-    resave: false, // true: reset cookies for every request if expired
-    saveUninitialized: true,
+    secret: Env.SESSTION_SECRET,
+    resave: false, // xác định liệu session có được lưu trữ lại trong cơ sở dữ liệu mỗi khi có yêu cầu hay không
+    saveUninitialized: true, // true/false, xác định liệu session có được lưu trữ khi chưa có dữ liệu được lưu trữ trong session hay không
+    store: new RedisStore({ client: RedisIoClient }),
     cookie: {
-      secure: Env.NODE_ENV === 'production',
+      secure: Env.NODE_ENV === 'production', // Determines whether cookies are sent over HTTPS
       httpOnly: true,
-      maxAge: 5 * 60 * 1000 // 5 minutes time expiration
+      maxAge: 5 * 60 * 1000 // Cookie lifetime, in milliseconds. // 5 minutes
+      // path: "Đường dẫn của cookie, mặc định là '/'",
+      // expires: 'The expiration date of a cookie, represented as a Date object'
     }
   }))
 
