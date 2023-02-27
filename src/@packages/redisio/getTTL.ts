@@ -1,13 +1,13 @@
 import type Redis from 'ioredis'
 
 /**
- * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
+ * Lấy giá trị và thời gian hết hạn
  * @param {Redis} client - Đối tượng RedisClient
  * @param {string} key - Khóa
- * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
+ * @returns {Promise<boolean>} - Promise trả về [any, any] | null
  */
 
-async function getTTL(client: Redis, key: string): Promise<any> {
+async function getTTL(client: Redis, key: string): Promise<[any, any] | null> {
   try {
     const multi = client.multi()
     multi.get(key)

@@ -1,7 +1,7 @@
 import type Redis from 'ioredis'
 
 /**
- * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
+ * Sửa giá trị vào Redis
  * @param {Redis} client - Đối tượng RedisClient
  * @param {string} key - Khóa
  * @param {any} value - Giá trị

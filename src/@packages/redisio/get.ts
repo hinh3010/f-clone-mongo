@@ -1,10 +1,10 @@
 import type Redis from 'ioredis'
 
 /**
- * Lưu trữ giá trị vào Redis với tùy chọn thời gian hết hạn
+ * Lấy giá trị từ Redis
  * @param {Redis} client - Đối tượng RedisClient
  * @param {string} key - Khóa
- * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
+ * @returns {Promise<string | null>} - Promise trả về string | null
  */
 
 async function get(client: Redis, key: string): Promise<string | null> {
