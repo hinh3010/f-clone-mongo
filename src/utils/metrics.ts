@@ -1,8 +1,6 @@
-import express, { type Request, type Response } from 'express'
+import { type Application, type Request, type Response } from 'express'
 import client, { collectDefaultMetrics, register } from 'prom-client'
 import Logger from '../@loggers/logger.pino'
-
-const app = express()
 
 export const restResponseTimeHistogram = new client.Histogram({
   name: 'rest_response_time_duration_seconds',
@@ -16,7 +14,7 @@ export const databaseResponseTimeHistogram = new client.Histogram({
   labelNames: ['operation', 'success']
 })
 
-export function startMetricsServer(port = 9100): void {
+export function startMetricsServer(app: Application, port: number): void {
   collectDefaultMetrics()
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -25,7 +23,5 @@ export function startMetricsServer(port = 9100): void {
     return res.send(await register.metrics())
   })
 
-  app.listen(port, () => {
-    Logger.info(`[Metrics_Start:::] http://localhost:${port}/metrics`)
-  })
+  Logger.info(`[Metrics_Start:::] http://localhost:${port}/metrics`)
 }

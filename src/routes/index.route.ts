@@ -1,4 +1,5 @@
 import { type Request, type Response, Router } from 'express'
+import { Env } from '../config'
 import { testsRouter } from './test.route'
 
 class IndexRouter {
@@ -8,9 +9,9 @@ class IndexRouter {
     this.routes = Router()
     this.routes.use('/tests', testsRouter)
 
-    this.routes.use('/', (req: Request, res: Response) => {
+    this.routes.get('/', (req: Request, res: Response) => {
       res.json({
-        message: 'platform service'
+        message: `welcome service ${Env.SERVICE_NAME}`
       })
     })
   }
