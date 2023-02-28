@@ -10,7 +10,7 @@ export const Env = {
   MONGO_CONNECTION: {
     URI: process.env.MONGO_URI ?? '',
     OPTIONS: {
-      // useCreateIndex: true,
+      useCreateIndex: true,
       // poolSize: 10
       useNewUrlParser: true,
       useUnifiedTopology: true,
