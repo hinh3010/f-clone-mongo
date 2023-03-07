@@ -1,32 +1,21 @@
-import cors from 'cors'
 import express, { type Request, type Response, type Router } from 'express'
-import morgan from 'morgan'
 import 'reflect-metadata'
-import { routes } from './routes/index.route'
-import { Env } from './config'
-import path from 'path'
 import Logger from './@loggers/logger.pino'
+import { Env } from './config'
+import { routes } from './routes/index.route'
+import { serverLoader } from './server.loader'
+import { startMetricsServer } from './utils/metrics'
+import swaggerDocs from './utils/swagger'
 
 class Server {
   public app: express.Application = express()
 
   constructor() {
-    this.app.use(express.static(path.join(__dirname, '..', 'public'), { maxAge: 31557600000 }))
-    this.app.use(express.json())
-    this.app.use(express.urlencoded({ extended: true }))
-    this.app.use(morgan('dev'))
-
-    this.app.use(
-      cors({
-        origin: true,
-        methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
-        credentials: true
-      })
-    )
+    void serverLoader(this.app)
 
     this.app.get('/', (_: Request, res: Response) => {
       res.json({
-        message: 'hello cac ban tre'
+        message: `welcome service ${Env.SERVICE_NAME}`
       })
     })
 
@@ -48,9 +37,9 @@ class Server {
 
   public listen(port: number): void {
     this.app.listen(port, () => {
-      Logger.info(
-        `http://localhost:${port}/`
-      )
+      Logger.info(`[Server_Start:::] http://localhost:${port}/`)
+      swaggerDocs(this.app, port)
+      startMetricsServer(this.app, port)
     })
   }
 }

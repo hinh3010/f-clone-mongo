@@ -5,7 +5,28 @@ dotenv.config({ path: NODE_ENV })
 
 export const Env = {
   PORT: process.env.PORT,
-  PROJECT_NAME: '',
+  SERVICE_NAME: process.env.SERVICE_NAME,
   NODE_ENV,
-  MONGO_URI: process.env.MONGO_URI
+  MONGO_CONNECTION: {
+    URI: process.env.MONGO_URI ?? '',
+    OPTIONS: {
+      // useCreateIndex: true,
+      // poolSize: 10
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      ssl: true,
+      sslValidate: true,
+      dbName: 'platform'
+    }
+  },
+  REDIS_CONNECTION: {
+    URI: process.env.REDIS_URI,
+    HOST: process.env.REDIS_HOST ?? 'localhost',
+    PORT: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
+    PASSWORD: process.env.REDIS_PASSWORD,
+    USERNAME: process.env.REDIS_USERNAME,
+    OPTIONS: {
+    }
+  },
+  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre'
 }
