@@ -34,19 +34,19 @@ enum VERIFIS_TYPE {
   PhoneNumber = 'phone_number'
 }
 
-interface IAccount {
+export interface IAccount {
   firstName: string
   lastName: string
   reverseName?: boolean
 
-  email: string
+  email?: string
   password: string
-  phoneNumber: string
-  verifiType?: VERIFIS_TYPE
+  phoneNumber?: string
+  verifiType?: VERIFIS_TYPE[]
 
   avatarUrl?: string
   coverImageUrl?: string
-  status: STATUS_TYPE
+  status?: STATUS_TYPE
   dateOfBirth?: Date
   gender?: GENDER_TYPE
 
@@ -74,7 +74,7 @@ const AccountSchema = new Schema<IAccount>(
     verifiType: {
       type: [String],
       enum: Object.keys(VERIFIS_TYPE),
-      default: null
+      default: []
     },
 
     avatarUrl: { type: String },
