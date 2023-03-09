@@ -1,6 +1,7 @@
 import * as dotenv from 'dotenv'
 
-const NODE_ENV = process.env.NODE_ENV === 'production' ? 'production.env' : 'dev.env'
+const NODE_ENV =
+  process.env.NODE_ENV === 'production' ? 'production.env' : 'dev.env'
 dotenv.config({ path: NODE_ENV })
 
 export const Env = {
@@ -11,11 +12,14 @@ export const Env = {
     URI: process.env.MONGO_URI ?? '',
     OPTIONS: {
       // useCreateIndex: true,
-      // poolSize: 10
+      // poolSize: 100,
       useNewUrlParser: true,
       useUnifiedTopology: true,
       ssl: true,
       sslValidate: true,
+      socketTimeoutMS: 60000,
+      connectTimeoutMS: 30000,
+      serverSelectionTimeoutMS: 5000,
       dbName: 'platform'
     }
   },
@@ -25,8 +29,7 @@ export const Env = {
     PORT: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
     PASSWORD: process.env.REDIS_PASSWORD,
     USERNAME: process.env.REDIS_USERNAME,
-    OPTIONS: {
-    }
+    OPTIONS: {}
   },
   SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre'
 }

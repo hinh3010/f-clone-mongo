@@ -1,16 +1,17 @@
 import createError from 'http-errors'
-import { Account, type IAccount } from '../models/Account'
+import { User, type IUser } from '../models/User'
 
 export class AuthAction {
   async signUp(payload: any) {
-    const { email, password, firstName, lastName }: IAccount = payload
+    const { email, password, firstName, lastName }: IUser = payload
 
-    const isConflict = await Account.findOne({ email })
+    const isConflict = await User.findOne({ email })
     if (isConflict) {
       throw createError.Conflict(`${email} is already`)
     }
 
-    return await Account.create({
+    return User.create({
+      ...payload,
       email,
       password,
       firstName,

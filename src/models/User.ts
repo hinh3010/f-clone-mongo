@@ -1,4 +1,5 @@
-import { Schema, model, type ObjectId, type Model } from 'mongoose'
+import { Schema, type Model, type ObjectId } from 'mongoose'
+import { platformDb } from '../databases/mongo.db'
 
 export enum ROLES_TYPE {
   User = 'user',
@@ -34,7 +35,7 @@ export enum VERIFIS_TYPE {
   PhoneNumber = 'phone_number'
 }
 
-export interface IAccount {
+export interface IUser {
   firstName: string
   lastName: string
   reverseName?: boolean
@@ -61,7 +62,7 @@ export interface IAccount {
   meta?: any
 }
 
-const AccountSchema = new Schema<IAccount>(
+const UserSchema = new Schema<IUser>(
   {
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -73,7 +74,7 @@ const AccountSchema = new Schema<IAccount>(
 
     verifiType: {
       type: [String],
-      enum: Object.keys(VERIFIS_TYPE),
+      enum: Object.values(VERIFIS_TYPE),
       default: []
     },
 
@@ -82,14 +83,15 @@ const AccountSchema = new Schema<IAccount>(
 
     status: {
       type: String,
-      enum: Object.keys(STATUS_TYPE),
+      enum: Object.values(STATUS_TYPE),
       default: STATUS_TYPE.InActive
     },
+
     dateOfBirth: { type: Date },
 
     gender: {
       type: String,
-      enum: Object.keys(GENDER_TYPE),
+      enum: Object.values(GENDER_TYPE),
       default: GENDER_TYPE.Unspecified
     },
 
@@ -101,7 +103,7 @@ const AccountSchema = new Schema<IAccount>(
 
     accountType: {
       type: String,
-      enum: Object.keys(ACCOUNT_TYPE),
+      enum: Object.values(ACCOUNT_TYPE),
       default: ACCOUNT_TYPE.Account
     },
 
@@ -112,7 +114,7 @@ const AccountSchema = new Schema<IAccount>(
     deletedById: {
       type: Schema.Types.ObjectId,
       required: false,
-      ref: 'Account'
+      ref: 'User'
     },
 
     meta: { type: Schema.Types.Mixed }
@@ -127,13 +129,13 @@ const AccountSchema = new Schema<IAccount>(
   }
 )
 
-AccountSchema.virtual('fullName').get(function (this: IAccount) {
+UserSchema.virtual('displayName').get(function (this: IUser) {
   return this.reverseName
-    ? `${this.firstName} ${this.lastName}`
-    : `${this.lastName} ${this.firstName}`
+    ? `${this.lastName} ${this.firstName}`
+    : `${this.firstName} ${this.lastName}`
 })
 
-AccountSchema.virtual('age').get(function () {
+UserSchema.virtual('age').get(function () {
   if (this.dateOfBirth) {
     const diff: number = Date.now() - this.dateOfBirth.getTime()
     const ageDate = new Date(diff)
@@ -142,4 +144,4 @@ AccountSchema.virtual('age').get(function () {
   return null
 })
 
-export const Account: Model<IAccount> = model('Account', AccountSchema)
+export const User: Model<IUser> = platformDb.model('User', UserSchema)
