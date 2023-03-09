@@ -1,6 +1,6 @@
 import { Schema, model, type ObjectId, type Model } from 'mongoose'
 
-enum ROLES_TYPE {
+export enum ROLES_TYPE {
   User = 'user',
   Admin = 'admin',
   SuperAdmin = 'super_admin',
@@ -9,27 +9,27 @@ enum ROLES_TYPE {
   Viewer = 'viewer'
 }
 
-enum ACCOUNT_TYPE {
+export enum ACCOUNT_TYPE {
   Account = 'account',
   Google = 'google',
   Facebook = 'facebook'
 }
 
-enum STATUS_TYPE {
+export enum STATUS_TYPE {
   InActive = 'inactive',
   Pending = 'pending',
   Active = 'active',
   Banned = 'banned'
 }
 
-enum GENDER_TYPE {
+export enum GENDER_TYPE {
   Male = 'male',
   Female = 'female',
   Othor = 'other',
   Unspecified = 'unspecified'
 }
 
-enum VERIFIS_TYPE {
+export enum VERIFIS_TYPE {
   Email = 'email',
   PhoneNumber = 'phone_number'
 }
