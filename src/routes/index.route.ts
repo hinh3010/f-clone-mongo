@@ -9,7 +9,7 @@ class IndexRouter {
     this.routes = Router()
     this.routes.use('/tests', testsRouter)
 
-    this.routes.get('/', (req: Request, res: Response) => {
+    this.routes.get('/', (_: Request, res: Response) => {
       res.json({
         message: `welcome service ${Env.SERVICE_NAME}`
       })
