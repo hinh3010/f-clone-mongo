@@ -8,25 +8,30 @@ export class AuthController {
 
   signUp = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'test', success: 'true' })
+    timer({ operation: 'auth_sign_up', success: 'true' })
 
-    const newUser = await this.authAction.signUp(req.body)
+    const responses = await this.authAction.signUp(req.body)
 
     return res.json({
       status: 200,
-      data: newUser
+      data: responses
     })
   })
 
   signIn = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'test', success: 'true' })
-    return res.json({ adu: 'signIn' })
+    timer({ operation: 'auth_sign_in', success: 'true' })
+    const responses = await this.authAction.signIn(req.body)
+
+    return res.json({
+      status: 200,
+      data: responses
+    })
   })
 
   signOut = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'test', success: 'true' })
+    timer({ operation: 'auth_sign_out', success: 'true' })
     return res.json({ adu: 'signOut' })
   })
 }

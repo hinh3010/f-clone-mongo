@@ -11,16 +11,13 @@ export const Env = {
   MONGO_CONNECTION: {
     URI: process.env.MONGO_URI ?? '',
     OPTIONS: {
-      // useCreateIndex: true,
-      // poolSize: 100,
       useNewUrlParser: true,
       useUnifiedTopology: true,
       ssl: true,
       sslValidate: true,
       socketTimeoutMS: 60000,
       connectTimeoutMS: 30000,
-      serverSelectionTimeoutMS: 5000,
-      dbName: 'platform'
+      serverSelectionTimeoutMS: 5000
     }
   },
   REDIS_CONNECTION: {
@@ -31,5 +28,11 @@ export const Env = {
     USERNAME: process.env.REDIS_USERNAME,
     OPTIONS: {}
   },
-  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre'
+  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre',
+  JWT: {
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? 'HelloCacBanTre',
+    ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_EXPIRES ?? 50,
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? 'BatNgoChuaBaGia',
+    REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_EXPIRES ?? 50
+  }
 }

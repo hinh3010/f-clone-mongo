@@ -1,5 +1,6 @@
 import { Schema, type Model, type ObjectId } from 'mongoose'
 import { platformDb } from '../databases/mongo.db'
+import bcrypt from 'bcrypt'
 
 export enum ROLES_TYPE {
   User = 'user',
@@ -60,6 +61,8 @@ export interface IUser {
 
   accountType?: ACCOUNT_TYPE
   meta?: any
+
+  isValidPassword: (password: string) => Promise<boolean>
 }
 
 const UserSchema = new Schema<IUser>(
@@ -68,7 +71,15 @@ const UserSchema = new Schema<IUser>(
     lastName: { type: String, required: true },
     reverseName: { type: Boolean, default: false },
 
-    email: { type: String },
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      // Convert email to lowercase before saving to database
+      transform: function (email: string) {
+        return email.toLowerCase()
+      }
+    },
     password: { type: String, required: true, private: true },
     phoneNumber: { type: String },
 
@@ -107,7 +118,8 @@ const UserSchema = new Schema<IUser>(
       default: ACCOUNT_TYPE.Account
     },
 
-    referralCode: { type: String, unique: true },
+    referralCode: { type: String },
+    // referralCode: { type: String, unique: true },
     inviteCode: { type: String },
 
     deletedAt: { type: Date, required: false },
@@ -143,5 +155,35 @@ UserSchema.virtual('age').get(function () {
   }
   return null
 })
+
+UserSchema.pre('save', async function (next) {
+  try {
+    if (this.accountType !== ACCOUNT_TYPE.Account) next()
+    if (!this.isModified('password')) next()
+
+    // Generate a salt
+    const salt = bcrypt.genSaltSync(10)
+    // Generate a password hash (salt + hash)
+    const passwordHashed = bcrypt.hashSync(this.password, salt)
+    // Re-assign password hashed
+    this.password = passwordHashed
+
+    next()
+  } catch (error: any) {
+    next(error)
+  }
+})
+
+UserSchema.methods.isValidPassword = async function (
+  password: string
+): Promise<boolean> {
+  // try {
+  console.log(this.password)
+  console.log(password)
+  return bcrypt.compareSync(password, this.password)
+  // } catch (error: any) {
+  //   throw new Error(error)
+  // }
+}
 
 export const User: Model<IUser> = platformDb.model('User', UserSchema)
