@@ -6,9 +6,7 @@ const _formatKey = (key: string): string => {
   const serviceName = Env.SERVICE_NAME
   const nodeEnv = Env.NODE_ENV
 
-  return (serviceName && nodeEnv)
-    ? `${serviceName}_${nodeEnv}_${key}`
-    : 'local_' + key
+  return serviceName && nodeEnv ? `${serviceName}_${key}` : key
 }
 
 /**
@@ -18,7 +16,11 @@ const _formatKey = (key: string): string => {
  * @param {number} [expiration=null] - Thời gian hết hạn tính bằng giây, mặc định là không có thời gian hết hạn
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
-const set = async (key: string, value: any, expiration?: number): Promise<boolean> => {
+const set = async (
+  key: string,
+  value: any,
+  expiration?: number
+): Promise<boolean> => {
   const redisKeys = _formatKey(key)
   return await RedisIo.set(RedisIoClient, redisKeys, value, expiration)
 }
@@ -40,7 +42,11 @@ const get = async (key: string): Promise<string | null> => {
  * @param {number} [expiration=null] - Thời gian hết hạn tính bằng giây, mặc định là không có thời gian hết hạn
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
-const edit = async (key: string, value: any, expiration?: number): Promise<boolean> => {
+const edit = async (
+  key: string,
+  value: any,
+  expiration?: number
+): Promise<boolean> => {
   const redisKeys = _formatKey(key)
   return await RedisIo.edit(RedisIoClient, redisKeys, value, expiration)
 }
@@ -51,7 +57,10 @@ const edit = async (key: string, value: any, expiration?: number): Promise<boole
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
 const del = async (keys: string | string[]): Promise<boolean> => {
-  const redisKeys = typeof keys === 'string' ? _formatKey(keys) : keys.map(key => _formatKey(key))
+  const redisKeys =
+    typeof keys === 'string'
+      ? _formatKey(keys)
+      : keys.map((key) => _formatKey(key))
   return await RedisIo.del(RedisIoClient, redisKeys)
 }
 
@@ -70,10 +79,15 @@ const getTTL = async (key: string): Promise<[any, any] | null> => {
  * @returns {Promise<boolean>} - Promise trả về true nếu lưu trữ thành công, ngược lại trả về false
  */
 const getMulti = async (keys: string[]): Promise<string | null> => {
-  const redisKeys = keys.map(key => _formatKey(key))
+  const redisKeys = keys.map((key) => _formatKey(key))
   return await RedisIo.getMulti(RedisIoClient, redisKeys)
 }
 
 export default {
-  set, get, getMulti, getTTL, del, edit
+  set,
+  get,
+  getMulti,
+  getTTL,
+  del,
+  edit
 }

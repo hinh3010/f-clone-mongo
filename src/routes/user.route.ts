@@ -26,7 +26,7 @@ class UserRouter {
     })
     this.router.route('/users').get(
       // passportService.authenticate('jwt', { session: false }),
-      authRole.isAdmin,
+      authRole.isUser,
       userCtl.getListUser
     )
 
