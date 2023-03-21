@@ -1,21 +1,21 @@
+import Bluebird from 'bluebird'
 import compression from 'compression'
+import connectRedis from 'connect-redis'
 import cors from 'cors'
 import express, { type Request, type Response } from 'express'
 import mongoSanitize from 'express-mongo-sanitize'
 import session from 'express-session'
 import helmet from 'helmet'
 import morgan from 'morgan'
+import passport from 'passport'
 import path from 'path'
 import responseTime from 'response-time'
 import xss from 'xss-clean'
 import { Env } from './config'
 import { RedisIoClient } from './databases/redisio.db'
 import { restResponseTimeHistogram } from './utils/metrics'
-import connectRedis from 'connect-redis'
-import Bluebird from 'bluebird'
 
 const RedisStore = connectRedis(session)
-
 async function connectDb(): Promise<void> {
   await Bluebird.all([
     import('./databases/mongo.db'),
@@ -95,6 +95,9 @@ export async function serverLoader(app: express.Application): Promise<void> {
       }
     })
   )
+
+  // passport
+  app.use(passport.initialize())
 
   await connectDb()
 }

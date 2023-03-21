@@ -5,8 +5,8 @@ import { type IError } from './@types'
 import { Env } from './config'
 import { routes } from './routes/index.route'
 import { serverLoader } from './server.loader'
-import { startMetricsServer } from './utils/metrics'
-import swaggerDocs from './utils/swagger'
+// import { startMetricsServer } from './utils/metrics'
+// import swaggerDocs from './utils/swagger'
 
 const handlerError = (err: IError, _: Request, res: Response, __: any) => {
   return res.json({
@@ -41,8 +41,8 @@ class Server {
   public listen(port: number): void {
     this.app.listen(port, () => {
       Logger.info(`[Server_Start:::] http://localhost:${port}/`)
-      swaggerDocs(this.app, port)
-      startMetricsServer(this.app, port)
+      // swaggerDocs(this.app, port)
+      // startMetricsServer(this.app, port)
     })
   }
 }

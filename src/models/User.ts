@@ -44,7 +44,7 @@ export interface IUser {
   email?: string
   password: string
   phoneNumber?: string
-  verifiType?: VERIFIS_TYPE[]
+  verifisType?: VERIFIS_TYPE[]
 
   avatarUrl?: string
   coverImageUrl?: string
@@ -53,8 +53,8 @@ export interface IUser {
   gender?: GENDER_TYPE
 
   roles?: ROLES_TYPE[]
-  referralCode?: string
-  inviteCode?: string
+  referralCode: string
+  inviteCode: string
 
   deletedAt?: Date
   deletedById?: ObjectId
@@ -83,7 +83,7 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, required: true, private: true },
     phoneNumber: { type: String },
 
-    verifiType: {
+    verifisType: {
       type: [String],
       enum: Object.values(VERIFIS_TYPE),
       default: []
@@ -118,8 +118,7 @@ const UserSchema = new Schema<IUser>(
       default: ACCOUNT_TYPE.Account
     },
 
-    referralCode: { type: String },
-    // referralCode: { type: String, unique: true },
+    referralCode: { type: String, unique: true },
     inviteCode: { type: String },
 
     deletedAt: { type: Date, required: false },
@@ -129,7 +128,7 @@ const UserSchema = new Schema<IUser>(
       ref: 'User'
     },
 
-    meta: { type: Schema.Types.Mixed }
+    meta: { type: Schema.Types.Mixed, required: false }
   },
   {
     timestamps: {
@@ -177,13 +176,18 @@ UserSchema.pre('save', async function (next) {
 UserSchema.methods.isValidPassword = async function (
   password: string
 ): Promise<boolean> {
-  // try {
-  console.log(this.password)
-  console.log(password)
-  return bcrypt.compareSync(password, this.password)
-  // } catch (error: any) {
-  //   throw new Error(error)
-  // }
+  try {
+    return bcrypt.compareSync(password, this.password)
+  } catch (error: any) {
+    throw new Error(error)
+  }
 }
+
+UserSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.password
+    return ret
+  }
+})
 
 export const User: Model<IUser> = platformDb.model('User', UserSchema)

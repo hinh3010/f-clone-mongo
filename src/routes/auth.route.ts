@@ -21,7 +21,6 @@ class AuthRouter {
     })
     this.router.route('/sign-in').post(authCtl.signIn)
     this.router.route('/sign-up').post(authCtl.signUp)
-    this.router.route('/sign-out').post(authCtl.signOut)
   }
 }
 

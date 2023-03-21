@@ -1,7 +1,7 @@
-import Jwt, { type SignOptions } from 'jsonwebtoken'
+import CryptoJS from 'crypto-js'
+import Jwt, { type JwtPayload, type SignOptions } from 'jsonwebtoken'
+import { type ObjectId } from 'mongodb'
 import { Env } from '../config'
-import createError from 'http-errors'
-import { type NextFunction, type Request, type Response } from 'express'
 
 const {
   ACCESS_TOKEN_SECRET,
@@ -10,8 +10,16 @@ const {
   REFRESH_TOKEN_EXPIRES
 } = Env.JWT
 
+const privateKey = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex)
+const publicKey = CryptoJS.SHA256(privateKey).toString()
+console.log(publicKey)
+
+export interface IPayload extends JwtPayload {
+  _id: ObjectId
+}
+
 export class JwtService {
-  async generateAccessToken(payload: object): Promise<string | unknown> {
+  async generateAccessToken(payload: IPayload): Promise<string | unknown> {
     return new Promise((resolve, reject) => {
       const serret = ACCESS_TOKEN_SECRET
       const options: SignOptions = {
@@ -26,7 +34,7 @@ export class JwtService {
     })
   }
 
-  async generateRefreshToken(payload: object): Promise<string | unknown> {
+  async generateRefreshToken(payload: IPayload): Promise<string | unknown> {
     const serret = REFRESH_TOKEN_SECRET
     const options: SignOptions = {
       expiresIn: REFRESH_TOKEN_EXPIRES,
@@ -40,58 +48,11 @@ export class JwtService {
     }
   }
 
-  async verifyAccessToken(req: Request, _: Response, next: NextFunction) {
-    if (!req.headers.authorization) {
-      next(createError.Unauthorized())
-      return
-    }
-    const authorization = req.headers.authorization
-    const token = authorization.split(' ')[1]
-    if (!token) {
-      next(createError.Unauthorized())
-      return
-    }
-    Jwt.verify(token, ACCESS_TOKEN_SECRET, (err, payload) => {
-      if (err) {
-        if (err.name === 'JsonWebTokenError') {
-          next(createError.Unauthorized())
-          return
-        }
-        next(createError.Unauthorized(err.message))
-        return
-      }
-      req.body = {
-        ...req.body,
-        payload
-      }
-      next()
-    })
+  async verifyAccessToken(token: string) {
+    return Jwt.verify(token, ACCESS_TOKEN_SECRET)
   }
 
-  //   async verifyRefreshToken(refreshToken: string) {
-  //     return new Promise((resolve, reject) => {
-  //       if (!refreshToken) {
-  //         reject(createError.BadRequest())
-  //       }
-  //       Jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, payload) => {
-  //         if (err) reject(err)
-  //         resolve(payload)
-  //       })
-  //     })
-  //   }
-
-  async verifyRefreshToken(req: Request, _: Response, next: NextFunction) {
-    const refreshToken = req.cookies
-      .split('; ')
-      .find((row: string) => row.startsWith('refresh_token='))
-      .split('=')[1]
-
-    if (!refreshToken) {
-      next(createError.BadRequest())
-    }
-    Jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err: any, payload: any) => {
-      if (err) next(err)
-      return payload
-    })
+  async verifyRefreshToken(refreshToken: string) {
+    return Jwt.verify(refreshToken, REFRESH_TOKEN_SECRET)
   }
 }
