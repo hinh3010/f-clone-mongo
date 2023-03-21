@@ -1,4 +1,4 @@
-import { model, Schema, type ObjectId } from 'mongoose'
+import { model, Schema } from 'mongoose'
 import { BaseDoc, FILE_TYPES, type IBaseDoc } from '.'
 import { locationDoc, type ILocationDoc } from './Location'
 
@@ -13,7 +13,6 @@ export interface IEvent extends IBaseDoc {
     fileType: FILE_TYPES
     thumbnail: string
   }>
-  guests?: ObjectId[]
   meta?: any
 }
 
@@ -41,7 +40,6 @@ const EventSchema = new Schema<IEvent>(
         }
       }
     ],
-    guests: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     ...BaseDoc,
     meta: { type: Schema.Types.Mixed, required: false }
   },

@@ -103,6 +103,7 @@ const PostSchema = new Schema<IPost>(
     shares: {
       postId: {
         type: Schema.Types.ObjectId,
+        ref: 'Post',
         required: false
       },
       sharedAt: {

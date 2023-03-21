@@ -2,13 +2,13 @@ import { type ObjectId, Schema, type Model } from 'mongoose'
 import { BaseDoc, type IBaseDoc } from '.'
 import { platformDb } from '../databases/mongo.db'
 
-export interface IPoll extends IBaseDoc {
+export interface IVotePoll extends IBaseDoc {
   pollId: ObjectId
   optionsId: ObjectId
   meta?: any
 }
 
-const PollSchema = new Schema<IPoll>(
+const VotePollSchema = new Schema<IVotePoll>(
   {
     pollId: { type: Schema.Types.ObjectId, required: true, ref: 'Poll' },
     optionsId: { type: Schema.Types.ObjectId, required: true },
@@ -26,4 +26,7 @@ const PollSchema = new Schema<IPoll>(
   }
 )
 
-export const Poll: Model<IPoll> = platformDb.model('Poll', PollSchema)
+export const VotePoll: Model<IVotePoll> = platformDb.model(
+  'VotePoll',
+  VotePollSchema
+)
