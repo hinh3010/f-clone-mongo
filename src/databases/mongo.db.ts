@@ -1,7 +1,7 @@
-// import { Promise as BluebirdPromise } from 'bluebird'
 import mongoose, { type Connection } from 'mongoose'
 import Logger from '../@loggers/logger.pino'
 import { Env } from '../config'
+import PromiseBlueBird from '../utils/bluebird'
 
 interface MyConnection extends mongoose.Connection {
   name: string
@@ -37,39 +37,16 @@ function newConnection(uri: string, options: object): Connection {
   return mongodb
 }
 
-// const mongooDbConnect = async (): Promise<any> => {
-//   try {
-//     const { URI, OPTIONS } = Env.MONGO_CONNECTION
-//     newConnection(URI, OPTIONS)
-//   } catch (error) {
-//     Logger.error(`[MongoDB:::] Failed to connect ${error}`)
-//   }
-// }
+const { URI, OPTIONS } = Env.MONGO_CONNECTION
 
-// export default mongooDbConnect
+// export const platformDb = newConnection(URI, {
+//   ...OPTIONS,
+//   dbName: 'platform'
+// })
 
-// const mongooseDbConnect = async () => {
-//   const { URI, OPTIONS } = Env.MONGO_CONNECTION
-//   Logger.info(`[MongoDb:::] disconnected ${OPTIONS.dbName}.db!!`)
-//   try {
-//     await mongoose.connect(URI, OPTIONS)
-//   } catch (error) {
-//     Logger.error(`[MongoDB:::] Failed to connect ${error}`)
-//   }
-// }
-
-// export default mongooseDbConnect
-
-const { URI } = Env.MONGO_CONNECTION
-
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  ssl: true,
-  sslValidate: true,
-  socketTimeoutMS: 60000,
-  connectTimeoutMS: 30000,
-  serverSelectionTimeoutMS: 5000,
-  dbName: 'platform'
-}
-export const platformDb = newConnection(URI, options)
+export const [platformDb] = await PromiseBlueBird.all([
+  newConnection(URI, {
+    ...OPTIONS,
+    dbName: 'platform'
+  })
+])

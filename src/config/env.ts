@@ -11,16 +11,13 @@ export const Env = {
   MONGO_CONNECTION: {
     URI: process.env.MONGO_URI ?? '',
     OPTIONS: {
-      // useCreateIndex: true,
-      // poolSize: 100,
       useNewUrlParser: true,
       useUnifiedTopology: true,
       ssl: true,
       sslValidate: true,
       socketTimeoutMS: 60000,
       connectTimeoutMS: 30000,
-      serverSelectionTimeoutMS: 5000,
-      dbName: 'platform'
+      serverSelectionTimeoutMS: 5000
     }
   },
   REDIS_CONNECTION: {

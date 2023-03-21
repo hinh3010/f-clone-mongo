@@ -16,7 +16,6 @@ module.exports = {
     '@typescript-eslint/strict-boolean-expressions': 'off',
     '@typescript-eslint/space-before-function-paren': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
-    '@typescript-eslint/explicit-function-return-types': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
