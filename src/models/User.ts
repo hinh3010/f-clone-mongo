@@ -1,5 +1,6 @@
 import { Schema, type Model, type ObjectId } from 'mongoose'
 import { platformDb } from '../databases/mongo.db'
+import bcrypt from 'bcrypt'
 
 export enum ROLES_TYPE {
   User = 'user',
@@ -43,7 +44,7 @@ export interface IUser {
   email?: string
   password: string
   phoneNumber?: string
-  verifiType?: VERIFIS_TYPE[]
+  verifisType?: VERIFIS_TYPE[]
 
   avatarUrl?: string
   coverImageUrl?: string
@@ -52,14 +53,16 @@ export interface IUser {
   gender?: GENDER_TYPE
 
   roles?: ROLES_TYPE[]
-  referralCode?: string
-  inviteCode?: string
+  referralCode: string
+  inviteCode: string
 
   deletedAt?: Date
   deletedById?: ObjectId
 
   accountType?: ACCOUNT_TYPE
   meta?: any
+
+  isValidPassword: (password: string) => Promise<boolean>
 }
 
 const UserSchema = new Schema<IUser>(
@@ -68,11 +71,19 @@ const UserSchema = new Schema<IUser>(
     lastName: { type: String, required: true },
     reverseName: { type: Boolean, default: false },
 
-    email: { type: String },
+    email: {
+      type: String,
+      lowercase: true,
+      trim: true,
+      // Convert email to lowercase before saving to database
+      transform: function (email: string) {
+        return email.toLowerCase()
+      }
+    },
     password: { type: String, required: true, private: true },
     phoneNumber: { type: String },
 
-    verifiType: {
+    verifisType: {
       type: [String],
       enum: Object.values(VERIFIS_TYPE),
       default: []
@@ -117,7 +128,7 @@ const UserSchema = new Schema<IUser>(
       ref: 'User'
     },
 
-    meta: { type: Schema.Types.Mixed }
+    meta: { type: Schema.Types.Mixed, required: false }
   },
   {
     timestamps: {
@@ -142,6 +153,41 @@ UserSchema.virtual('age').get(function () {
     return Math.abs(ageDate.getUTCFullYear() - 1970)
   }
   return null
+})
+
+UserSchema.pre('save', async function (next) {
+  try {
+    if (this.accountType !== ACCOUNT_TYPE.Account) next()
+    if (!this.isModified('password')) next()
+
+    // Generate a salt
+    const salt = bcrypt.genSaltSync(10)
+    // Generate a password hash (salt + hash)
+    const passwordHashed = bcrypt.hashSync(this.password, salt)
+    // Re-assign password hashed
+    this.password = passwordHashed
+
+    next()
+  } catch (error: any) {
+    next(error)
+  }
+})
+
+UserSchema.methods.isValidPassword = async function (
+  password: string
+): Promise<boolean> {
+  try {
+    return bcrypt.compareSync(password, this.password)
+  } catch (error: any) {
+    throw new Error(error)
+  }
+}
+
+UserSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.password
+    return ret
+  }
 })
 
 export const User: Model<IUser> = platformDb.model('User', UserSchema)

@@ -28,5 +28,11 @@ export const Env = {
     USERNAME: process.env.REDIS_USERNAME,
     OPTIONS: {}
   },
-  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre'
+  SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre',
+  JWT: {
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? 'HelloCacBanTre',
+    ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_EXPIRES ?? 5000,
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? 'BatNgoChuaBaGia',
+    REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_EXPIRES ?? 50000
+  }
 }

@@ -39,14 +39,7 @@ function newConnection(uri: string, options: object): Connection {
 
 const { URI, OPTIONS } = Env.MONGO_CONNECTION
 
-// export const platformDb = newConnection(URI, {
-//   ...OPTIONS,
-//   dbName: 'platform'
-// })
-
-export const [platformDb] = await PromiseBlueBird.all([
-  newConnection(URI, {
-    ...OPTIONS,
-    dbName: 'platform'
-  })
-])
+export const platformDb = newConnection(URI, {
+  ...OPTIONS,
+  dbName: 'platform'
+})

@@ -1,2 +1,0 @@
-# mongos-connector
-

@@ -1,16 +1,16 @@
 import { type Request, type Response } from 'express'
-import { AuthAction } from '../actions/auth.action'
 import catchAsync from '../middlewares/catchAsync'
+import { User } from '../models/User'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
 
-export class AuthController {
-  constructor(private readonly authAction: AuthAction = new AuthAction()) {}
-
-  signUp = catchAsync(async (req: Request, res: Response) => {
+export class UserController {
+  getListUser = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'auth_sign_up', success: 'true' })
 
-    const responses = await this.authAction.signUp(req.body)
+    console.log({ req: req.user })
+
+    const responses = await User.find().limit(5).lean()
 
     return res.json({
       status: 200,
@@ -18,14 +18,15 @@ export class AuthController {
     })
   })
 
-  signIn = catchAsync(async (req: Request, res: Response) => {
+  login = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'auth_sign_in', success: 'true' })
-    const responses = await this.authAction.signIn(req.body)
+    timer({ operation: 'auth_sign_up', success: 'true' })
 
     return res.json({
       status: 200,
-      data: responses
+      data: {
+        user: req.user
+      }
     })
   })
 }

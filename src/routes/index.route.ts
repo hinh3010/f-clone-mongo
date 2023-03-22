@@ -2,6 +2,7 @@ import { type Request, type Response, Router } from 'express'
 import { Env } from '../config'
 import { authRouter } from './auth.route'
 import { testsRouter } from './test.route'
+import { userRouter } from './user.route'
 
 class IndexRouter {
   public routes: Router
@@ -10,6 +11,7 @@ class IndexRouter {
     this.routes = Router()
     this.routes.use('/tests', testsRouter)
     this.routes.use('/auth', authRouter)
+    this.routes.use('/users', userRouter)
 
     this.routes.get('/', (req: Request, res: Response) => {
       res.json({
