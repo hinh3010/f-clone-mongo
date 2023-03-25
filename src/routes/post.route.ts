@@ -3,7 +3,7 @@ import { AuthController } from '../controllers/auth.controller'
 
 const ROUTER_NAME = 'auth'
 
-export class AuthRouter {
+export class PostRouter {
   public router: Router
 
   constructor(private readonly authCtl: AuthController = new AuthController()) {

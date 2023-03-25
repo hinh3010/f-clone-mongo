@@ -5,7 +5,7 @@ import { passportService } from '../services/passport.service'
 
 const ROUTER_NAME = 'users'
 
-class UserRouter {
+export class UserRouter {
   public router: Router
 
   constructor(
@@ -32,10 +32,7 @@ class UserRouter {
 
     this.router
       .route('/login')
-      .post(
-        passportService.authenticate('local', { session: false }),
-        userCtl.login
-      )
+      .post(passportService.authenticate('local', { session: false }), userCtl.login)
 
     // Configure the Facebook authentication route
     this.router.route('/login/facebook').post(
@@ -98,5 +95,3 @@ class UserRouter {
     })
   }
 }
-
-export const userRouter = new UserRouter().router

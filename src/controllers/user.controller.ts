@@ -1,8 +1,10 @@
 import { type Request, type Response } from 'express'
 import { Redis } from '../packages'
 import catchAsync from '../middlewares/catchAsync'
-import { User } from '../models/User'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
+
+import { getModel } from '../models'
+import { type IUser } from '@hellocacbantre/db-schemas'
 
 async function sleep(ms: number): Promise<any> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -27,6 +29,7 @@ export class UserController {
 
     await Redis.set('adu', { ec: 'ec' }, 600)
 
+    const User = getModel<IUser>('User')
     const responses = await User.find().limit(5).lean()
 
     return res.json({

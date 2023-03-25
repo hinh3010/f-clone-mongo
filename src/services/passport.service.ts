@@ -5,16 +5,10 @@ import {
   ExtractJwt,
   type VerifiedCallback as JwtVerifiedCallback
 } from 'passport-jwt'
-import { ACCOUNT_TYPE, STATUS_TYPE, User } from '../models/User'
-// import {
-//   Strategy as GoogleStrategy,
-//   type StrategyOptions,
-//   type Profile
-// } from 'passport-google-oauth20'
-// import {
-//   Strategy as FacebookStrategy,
-//   type StrategyOption
-// } from 'passport-facebook'
+
+import { getModel } from '../models'
+import { ACCOUNT_TYPE, STATUS_TYPE } from '@hellocacbantre/db-schemas/dist/enums/user.enum'
+import { type IUser } from '@hellocacbantre/db-schemas'
 
 import { Env } from '../config'
 import { type IPayload } from './jwt.service'
@@ -42,6 +36,8 @@ class PassportService {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (email: string, password: string, done) => {
           try {
+            const User = getModel<IUser>('User')
+
             const user = await User.findOne({
               email,
               accountType: ACCOUNT_TYPE.Account
@@ -91,6 +87,8 @@ class PassportService {
         // eslint-disable-next-line @typescript-eslint/no-misused-promises
         async (payload: IPayload, done: JwtVerifiedCallback) => {
           try {
+            const User = getModel<IUser>('User')
+
             const user = await User.findById(payload._id)
 
             if (!user) {

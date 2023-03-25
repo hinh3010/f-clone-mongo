@@ -3,7 +3,7 @@ import 'reflect-metadata'
 import Logger from './@loggers/logger.pino'
 import { type IError } from './@types'
 import { Env } from './config'
-import { routes } from './routes/index.route'
+import { PlatformRouter } from './routes/index.route'
 import { serverLoader } from './server.loader'
 // import { startMetricsServer } from './utils/metrics'
 // import swaggerDocs from './utils/swagger'
@@ -35,7 +35,7 @@ class Server {
   }
 
   routes(): Router {
-    return routes
+    return new PlatformRouter().routes
   }
 
   public listen(port: number): void {

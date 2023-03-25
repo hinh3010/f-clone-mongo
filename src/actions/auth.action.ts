@@ -1,10 +1,13 @@
 import Bluebird from 'bluebird'
 import createError from 'http-errors'
 import { generateCode } from '../helpers/generateCode'
-import { STATUS_TYPE, User, type IUser } from '../models/User'
 import { JwtService } from '../services/jwt.service'
 
+import { getModel } from '../models'
+import { type IUser } from '@hellocacbantre/db-schemas'
+
 const generateReferralCode = async (): Promise<string> => {
+  const User = getModel<IUser>('User')
   const referralCode = generateCode()
   const isReferralCode = await User.exists({ referralCode })
   if (isReferralCode) return generateReferralCode()
@@ -14,81 +17,81 @@ const generateReferralCode = async (): Promise<string> => {
 export class AuthAction {
   constructor(private readonly jwtService: JwtService = new JwtService()) {}
 
-  async signUp(payload: any) {
-    const { email, password, firstName, lastName, inviteCode }: IUser = payload
+  signUp() {
+    const User = getModel<IUser>('User')
 
-    const isConflict = await User.findOne({ email })
+    return async (payload: IUser) => {
+      const { email, password, firstName, lastName, inviteCode }: IUser = payload
 
-    if (isConflict) {
-      throw createError.Conflict(`${email} is already`)
-    }
+      const isConflict = await User.findOne({ email })
 
-    // generate referral code
-    const referralCode = await generateReferralCode()
+      if (isConflict) {
+        throw createError.Conflict(`${email} is already`)
+      }
 
-    const data = {
-      firstName,
-      lastName,
-      email,
-      password,
-      referralCode,
-      inviteCode
-    }
+      // generate referral code
+      const referralCode = await generateReferralCode()
 
-    const isInviteCode = await User.exists({ referralCode: inviteCode })
-    if (!isInviteCode) {
-      data.inviteCode = ''
-    }
+      const data = {
+        firstName,
+        lastName,
+        email,
+        password,
+        referralCode,
+        inviteCode
+      }
 
-    // Create a new user
-    const newUser = new User(data)
-    await newUser.save()
+      const isInviteCode = await User.exists({ referralCode: inviteCode })
+      if (!isInviteCode) {
+        data.inviteCode = ''
+      }
 
-    const { _id } = newUser
+      // Create a new user
+      const newUser = new User(data)
+      await newUser.save()
 
-    // generate token
-    const [token, refreshToken] = await Bluebird.all([
-      this.jwtService.generateAccessToken({ _id }),
-      this.jwtService.generateRefreshToken({ _id })
-    ])
+      const { _id } = newUser
 
-    return {
-      newUser,
-      token,
-      refreshToken
+      // generate token
+      const [token, refreshToken] = await Bluebird.all([
+        this.jwtService.generateAccessToken({ _id }),
+        this.jwtService.generateRefreshToken({ _id })
+      ])
+
+      return { token, refreshToken, newUser }
     }
   }
 
-  async signIn(payload: any) {
-    const { email, password }: IUser = payload
+  signIn() {
+    const User = getModel<IUser>('User')
 
-    const user = await User.findOne({ email })
+    return async (payload: IUser) => {
+      const { email, password }: IUser = payload
 
-    if (!user) {
-      throw createError.UnprocessableEntity(`${email} invalid`)
-    }
+      const user = await User.findOne({ email })
 
-    const { status, _id } = user
+      if (!user) {
+        throw createError.UnprocessableEntity(`${email} invalid`)
+      }
 
-    if (status === STATUS_TYPE.Banned) {
-      throw createError.Forbidden('Account banned')
-    }
+      const { status, _id } = user
 
-    const isCorrectPassword = await user.isValidPassword(password)
-    if (!isCorrectPassword) {
-      throw createError.Unauthorized('password invalid')
-    }
+      if (status === 'banned') {
+        throw createError.Forbidden('Account banned')
+      }
 
-    // generate token
-    const [token, refreshToken] = await Bluebird.all([
-      this.jwtService.generateAccessToken({ _id }),
-      this.jwtService.generateRefreshToken({ _id })
-    ])
+      const isCorrectPassword = await user.isValidPassword(password)
+      if (!isCorrectPassword) {
+        throw createError.Unauthorized('password invalid')
+      }
 
-    return {
-      user,
-      token,
-      refreshToken
+      // generate token
+      const [token, refreshToken] = await Bluebird.all([
+        this.jwtService.generateAccessToken({ _id }),
+        this.jwtService.generateRefreshToken({ _id })
+      ])
+
+      return { token, refreshToken, user }
     }
   }
 }

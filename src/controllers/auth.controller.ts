@@ -10,7 +10,7 @@ export class AuthController {
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'auth_sign_up', success: 'true' })
 
-    const responses = await this.authAction.signUp(req.body)
+    const responses = await this.authAction.signUp()(req.body)
 
     return res.json({
       status: 200,
@@ -21,7 +21,7 @@ export class AuthController {
   signIn = catchAsync(async (req: Request, res: Response) => {
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'auth_sign_in', success: 'true' })
-    const responses = await this.authAction.signIn(req.body)
+    const responses = await this.authAction.signIn()(req.body)
 
     return res.json({
       status: 200,

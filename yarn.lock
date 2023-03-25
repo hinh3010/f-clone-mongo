@@ -1115,6 +1115,10 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@hellocacbantre/db-schemas@hinh3010/packages-db-schemas":
+  version "1.0.0"
+  resolved "git+ssh://git@github.com/hinh3010/packages-db-schemas.git#6ae3c5ee4f790ec5d508fb881e496f9b5d632ce9"
+
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"

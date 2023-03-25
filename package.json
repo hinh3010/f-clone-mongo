@@ -18,6 +18,7 @@
   "author": "",
   "license": "ADU",
   "dependencies": {
+    "@hellocacbantre/db-schemas": "hinh3010/packages-db-schemas",
     "@sentry/node": "^7.44.2",
     "@sentry/tracing": "^7.44.2",
     "agenda": "^5.0.0",

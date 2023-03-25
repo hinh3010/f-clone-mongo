@@ -1,17 +1,19 @@
-import { type Request, type Response, Router } from 'express'
+import { Router, type Request, type Response } from 'express'
 import { Env } from '../config'
-import { authRouter } from './auth.route'
-import { testsRouter } from './test.route'
-import { userRouter } from './user.route'
+import { AuthRouter } from './auth.route'
+import { PostRouter } from './post.route'
+import { TestsRouter } from './test.route'
+import { UserRouter } from './user.route'
 
-class IndexRouter {
+export class PlatformRouter {
   public routes: Router
 
   constructor() {
     this.routes = Router()
-    this.routes.use('/tests', testsRouter)
-    this.routes.use('/auth', authRouter)
-    this.routes.use('/users', userRouter)
+    this.routes.use('/tests', new TestsRouter().router)
+    this.routes.use('/auth', new AuthRouter().router)
+    this.routes.use('/auth', new PostRouter().router)
+    this.routes.use('/users', new UserRouter().router)
 
     this.routes.get('/', (req: Request, res: Response) => {
       res.json({
@@ -20,5 +22,3 @@ class IndexRouter {
     })
   }
 }
-
-export const routes = new IndexRouter().routes
