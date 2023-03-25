@@ -20,6 +20,7 @@
   "dependencies": {
     "@sentry/node": "^7.44.2",
     "@sentry/tracing": "^7.44.2",
+    "agenda": "^5.0.0",
     "bcrypt": "^5.1.0",
     "bluebird": "^3.7.2",
     "compression": "^1.7.4",
@@ -40,6 +41,7 @@
     "mongodb": "^5.1.0",
     "mongoose": "^7.0.0",
     "morgan": "^1.10.0",
+    "node-schedule": "^2.1.1",
     "passport": "^0.6.0",
     "passport-facebook": "^3.0.0",
     "passport-google-oauth20": "^2.0.0",
@@ -73,6 +75,7 @@
     "@types/jest": "^29.4.0",
     "@types/jsonwebtoken": "^8.5.9",
     "@types/morgan": "^1.9.3",
+    "@types/node-schedule": "^2.1.0",
     "@types/passport": "^1.0.12",
     "@types/passport-facebook": "^2.1.11",
     "@types/passport-google-oauth20": "^2.0.11",
