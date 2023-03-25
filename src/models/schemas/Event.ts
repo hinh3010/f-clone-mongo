@@ -1,5 +1,5 @@
-import { model, Schema } from 'mongoose'
-import { BaseDoc, FILE_TYPES, type IBaseDoc } from './base'
+import { Schema } from 'mongoose'
+import { BaseDoc, FILE_TYPES, type IBaseDoc } from '../common'
 import { locationDoc, type ILocationDoc } from './Location'
 
 export interface IEvent extends IBaseDoc {
@@ -53,4 +53,4 @@ const EventSchema = new Schema<IEvent>(
   }
 )
 
-export const Event = model<IEvent>('Event', EventSchema)
+export default EventSchema

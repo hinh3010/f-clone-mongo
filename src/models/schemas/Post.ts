@@ -1,6 +1,5 @@
-import { Schema, type Model, type ObjectId } from 'mongoose'
-import { BaseDoc, FILE_TYPES, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema, type ObjectId } from 'mongoose'
+import { BaseDoc, FILE_TYPES, type IBaseDoc } from '../common'
 import { locationDoc, type ILocationDoc } from './Location'
 
 export enum POST_VISIBLE_TYPE {
@@ -126,4 +125,4 @@ const PostSchema = new Schema<IPost>(
   }
 )
 
-export const Post: Model<IPost> = platformDb.model('Post', PostSchema)
+export default PostSchema

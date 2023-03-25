@@ -1,6 +1,5 @@
-import { type ObjectId, Schema, type Model } from 'mongoose'
-import { BaseDoc, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema, type ObjectId } from 'mongoose'
+import { BaseDoc, type IBaseDoc } from '../common/base'
 
 export enum LOCATION_TYPE {
   Country = 'country',
@@ -73,7 +72,4 @@ const LocationSchema = new Schema<ILocation>(
   }
 )
 
-export const Location: Model<ILocation> = platformDb.model(
-  'Location',
-  LocationSchema
-)
+export default LocationSchema

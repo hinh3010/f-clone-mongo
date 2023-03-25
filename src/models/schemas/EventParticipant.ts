@@ -1,6 +1,5 @@
-import { type ObjectId, Schema, type Model } from 'mongoose'
-import { BaseDoc, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema, type ObjectId } from 'mongoose'
+import { BaseDoc, type IBaseDoc } from '../common/base'
 
 export enum INTERACT_TYPE {
   Like = 'like',
@@ -36,7 +35,4 @@ const EventParticipantSchema = new Schema<IEventParticipant>(
   }
 )
 
-export const EventParticipant: Model<IEventParticipant> = platformDb.model(
-  'EventParticipant',
-  EventParticipantSchema
-)
+export default EventParticipantSchema

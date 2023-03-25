@@ -1,6 +1,5 @@
-import { type ObjectId, Schema, type Model } from 'mongoose'
-import { BaseDoc, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema, type ObjectId } from 'mongoose'
+import { BaseDoc, type IBaseDoc } from '../common/base'
 
 export interface IVotePoll extends IBaseDoc {
   pollId: ObjectId
@@ -26,7 +25,4 @@ const VotePollSchema = new Schema<IVotePoll>(
   }
 )
 
-export const VotePoll: Model<IVotePoll> = platformDb.model(
-  'VotePoll',
-  VotePollSchema
-)
+export default VotePollSchema

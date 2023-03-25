@@ -1,6 +1,5 @@
-import { Schema, type Model } from 'mongoose'
-import { BaseDoc, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema } from 'mongoose'
+import { BaseDoc, type IBaseDoc } from '../common/base'
 
 export interface IPoll extends IBaseDoc {
   title: string
@@ -29,4 +28,4 @@ const PollSchema = new Schema<IPoll>(
   }
 )
 
-export const Poll: Model<IPoll> = platformDb.model('Poll', PollSchema)
+export default PollSchema

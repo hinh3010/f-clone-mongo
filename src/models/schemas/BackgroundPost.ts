@@ -1,7 +1,6 @@
-import { Schema, type Model } from 'mongoose'
-import { BaseDoc, type IBaseDoc } from './base'
-import { platformDb } from '../databases/mongo.db'
+import { Schema } from 'mongoose'
 import validator from 'validator'
+import { BaseDoc, type IBaseDoc } from '../common/base'
 
 export interface IBackgroundPost extends IBaseDoc {
   name: string
@@ -48,7 +47,4 @@ const BackgroundPostSchema = new Schema<IBackgroundPost>(
   }
 )
 
-export const BackgroundPost: Model<IBackgroundPost> = platformDb.model(
-  'BackgroundPost',
-  BackgroundPostSchema
-)
+export default BackgroundPostSchema
