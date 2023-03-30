@@ -12,7 +12,7 @@ export class PlatformRouter {
     this.routes = Router()
     this.routes.use('/tests', new TestsRouter().router)
     this.routes.use('/auth', new AuthRouter().router)
-    this.routes.use('/auth', new PostRouter().router)
+    this.routes.use('/posts', new PostRouter().router)
     this.routes.use('/users', new UserRouter().router)
 
     this.routes.get('/', (req: Request, res: Response) => {

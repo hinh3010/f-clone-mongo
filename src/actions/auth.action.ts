@@ -23,11 +23,9 @@ export class AuthAction {
     return async (payload: IUser) => {
       const { email, password, firstName, lastName, inviteCode }: IUser = payload
 
-      const isConflict = await User.findOne({ email })
+      const isConflict = await User.exists({ email })
 
-      if (isConflict) {
-        throw createError.Conflict(`${email} is already`)
-      }
+      if (isConflict) throw createError.Conflict(`${email} is already`)
 
       // generate referral code
       const referralCode = await generateReferralCode()
@@ -38,13 +36,11 @@ export class AuthAction {
         email,
         password,
         referralCode,
-        inviteCode
+        inviteCode: ''
       }
 
       const isInviteCode = await User.exists({ referralCode: inviteCode })
-      if (!isInviteCode) {
-        data.inviteCode = ''
-      }
+      if (isInviteCode) data.inviteCode = inviteCode
 
       // Create a new user
       const newUser = new User(data)
@@ -70,20 +66,14 @@ export class AuthAction {
 
       const user = await User.findOne({ email })
 
-      if (!user) {
-        throw createError.UnprocessableEntity(`${email} invalid`)
-      }
+      if (!user) throw createError.UnprocessableEntity(`${email} invalid`)
 
       const { status, _id } = user
 
-      if (status === 'banned') {
-        throw createError.Forbidden('Account banned')
-      }
+      if (status === 'banned') throw createError.Forbidden('Account banned')
 
       const isCorrectPassword = await user.isValidPassword(password)
-      if (!isCorrectPassword) {
-        throw createError.Unauthorized('password invalid')
-      }
+      if (!isCorrectPassword) throw createError.Unauthorized('password invalid')
 
       // generate token
       const [token, refreshToken] = await Bluebird.all([

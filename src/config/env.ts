@@ -1,7 +1,6 @@
 import * as dotenv from 'dotenv'
 
-const NODE_ENV =
-  process.env.NODE_ENV === 'production' ? 'production.env' : 'dev.env'
+const NODE_ENV = process.env.NODE_ENV === 'production' ? 'production.env' : 'dev.env'
 dotenv.config({ path: NODE_ENV })
 
 export const Env = {
@@ -31,8 +30,8 @@ export const Env = {
   SESSTION_SECRET: process.env.SESSTION_SECRET ?? 'hellocacbantre',
   JWT: {
     ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET ?? 'HelloCacBanTre',
-    ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_EXPIRES ?? 5000,
+    ACCESS_TOKEN_EXPIRES: process.env.ACCESS_TOKEN_EXPIRES ?? 50000,
     REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET ?? 'BatNgoChuaBaGia',
-    REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_EXPIRES ?? 50000
+    REFRESH_TOKEN_EXPIRES: process.env.REFRESH_TOKEN_EXPIRES ?? 500000
   }
 }

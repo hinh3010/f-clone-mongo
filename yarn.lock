@@ -1117,7 +1117,7 @@
 
 "@hellocacbantre/db-schemas@hinh3010/packages-db-schemas":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/hinh3010/packages-db-schemas.git#6ae3c5ee4f790ec5d508fb881e496f9b5d632ce9"
+  resolved "git+ssh://git@github.com/hinh3010/packages-db-schemas.git#4f175a88b54d5fd083ceda3aebd0837cb3bc44cd"
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
@@ -5014,7 +5014,7 @@ mongodb-connection-string-url@^2.5.4, mongodb-connection-string-url@^2.6.0:
     "@types/whatwg-url" "^8.2.1"
     whatwg-url "^11.0.0"
 
-mongodb@5.1.0, mongodb@^5.1.0:
+mongodb@5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/mongodb/-/mongodb-5.1.0.tgz#e551f9e496777bde9173e51d16c163ab2c805b9d"
   integrity sha512-qgKb7y+EI90y4weY3z5+lIgm8wmexbonz0GalHkSElQXVKtRuwqXuhXKccyvIjXCJVy9qPV82zsinY0W1FBnJw==

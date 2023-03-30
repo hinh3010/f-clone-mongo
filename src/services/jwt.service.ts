@@ -1,14 +1,10 @@
 import CryptoJS from 'crypto-js'
 import Jwt, { type JwtPayload, type SignOptions } from 'jsonwebtoken'
-import { type ObjectId } from 'mongodb'
+import { type ObjectId } from 'mongoose'
 import { Env } from '../config'
 
-const {
-  ACCESS_TOKEN_SECRET,
-  REFRESH_TOKEN_SECRET,
-  ACCESS_TOKEN_EXPIRES,
-  REFRESH_TOKEN_EXPIRES
-} = Env.JWT
+const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET, ACCESS_TOKEN_EXPIRES, REFRESH_TOKEN_EXPIRES } =
+  Env.JWT
 
 const privateKey = CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex)
 const publicKey = CryptoJS.SHA256(privateKey).toString()

@@ -7,6 +7,12 @@ import { getModel } from '../models'
 import { type IUser } from '@hellocacbantre/db-schemas'
 import { ROLES_TYPE } from '@hellocacbantre/db-schemas/dist/enums/user.enum'
 
+const _checkStatusActive = (user: IUser, next: NextFunction) => {
+  if (user.status !== 'active') {
+    return next(createError.Forbidden('Your account has not been activated'))
+  }
+}
+
 class AuthRole {
   constructor(private readonly jwtService: JwtService = new JwtService()) {}
 
@@ -29,6 +35,27 @@ class AuthRole {
     return next(createError.Unauthorized())
   })
 
+  isUserActive = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
+    const { authorization } = req.headers
+    if (authorization) {
+      const token = authorization.split(' ')[1]
+      if (!token) {
+        return next(createError.Unauthorized())
+      }
+      const decoded: any = await this.jwtService.verifyAccessToken(token)
+
+      const User = getModel<IUser>('User')
+      const user = await User.findById(decoded._id).lean()
+
+      // _checkStatusActive(user, next)
+
+      req.user = user
+
+      return next()
+    }
+    return next(createError.Unauthorized())
+  })
+
   isAdmin = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers
     if (authorization) {
@@ -42,6 +69,8 @@ class AuthRole {
       const user = await User.findById(decoded._id).lean()
 
       const { roles = [] } = user
+
+      _checkStatusActive(user, next)
 
       if (!roles.includes(ROLES_TYPE.Admin)) {
         return next(createError.Forbidden('You do not have permission'))
@@ -68,6 +97,8 @@ class AuthRole {
 
       const { roles = [] } = user
 
+      _checkStatusActive(user, next)
+
       if (!roles.includes(ROLES_TYPE.SuperAdmin)) {
         return next(createError.Forbidden('You do not have permission'))
       }
@@ -93,6 +124,8 @@ class AuthRole {
         const user = await User.findById(decoded._id).lean()
 
         const { roles = [] } = user
+
+        _checkStatusActive(user, next)
 
         if (!roles.includes(role)) {
           return next(createError.Forbidden('You do not have permission'))
