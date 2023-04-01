@@ -2,6 +2,7 @@ import { Router, type Request, type Response } from 'express'
 import { Env } from '../config'
 import { AuthRouter } from './auth.route'
 import { CommentRouter } from './comment.route'
+import { LikeRouter } from './like.route'
 import { PostRouter } from './post.route'
 import { TestsRouter } from './test.route'
 import { UserRouter } from './user.route'
@@ -16,6 +17,7 @@ export class PlatformRouter {
     this.routes.use('/users', new UserRouter().router)
     this.routes.use('/posts', new PostRouter().router)
     this.routes.use('/comments', new CommentRouter().router)
+    this.routes.use('/likes', new LikeRouter().router)
 
     this.routes.get('/', (req: Request, res: Response) => {
       res.json({

@@ -1,14 +1,14 @@
 import { type Request, type Response, Router } from 'express'
-import { CommentController } from '../controllers/comment.controller'
+import { LikeController } from '../controllers/like.controller'
 import AuthRole from '../middlewares/authRole'
 
-const ROUTER_NAME = 'comment'
+const ROUTER_NAME = 'like'
 
-export class CommentRouter {
+export class LikeRouter {
   public router: Router
 
   constructor(
-    private readonly controller: CommentController = new CommentController(),
+    private readonly controller: LikeController = new LikeController(),
     private readonly authRole: AuthRole = new AuthRole()
   ) {
     this.router = Router()
@@ -24,8 +24,7 @@ export class CommentRouter {
       })
     })
 
-    this.router.route('/create').post(authRole.isUserActive, controller.createComment)
-    this.router.route('/update/:commentId').put(authRole.isUser, controller.updateCommentById)
-    this.router.route('/delete/:commentId').delete(authRole.isUser, controller.deleteCommentById)
+    this.router.route('/like').post(authRole.isUserActive, controller.like)
+    this.router.route('/dislike').delete(authRole.isUser, controller.dislike)
   }
 }

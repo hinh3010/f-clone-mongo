@@ -1,4 +1,4 @@
-import { type IComment, type IPost } from '@hellocacbantre/db-schemas'
+import { COMMENT_ENTITY_TYPE, type IComment, type IPost } from '@hellocacbantre/db-schemas'
 import createError from 'http-errors'
 import { getModel } from '../../models'
 import {
@@ -19,7 +19,7 @@ export class CommentAction {
         if (!comment) throw createError.NotFound('Comment not found')
       }
 
-      if (entityType === 'Post') {
+      if (entityType === COMMENT_ENTITY_TYPE.Post) {
         const Post = getModel<IPost>('Post')
         const query = {
           deletedAt: { $exists: false },
@@ -67,8 +67,21 @@ export class CommentAction {
         _id: commentId
       }
 
-      const { deletedCount } = await Comment.deleteOne(query)
-      if (!deletedCount) throw createError.NotFound('Comment not found')
+      // const { deletedCount } = await Comment.deleteOne(query)
+      // if (!deletedCount) throw createError.NotFound('Comment not found')
+
+      const comment = await Comment.findOne(query)
+
+      if (!comment) throw createError.NotFound('Comment not found')
+
+      await Comment.updateOne(
+        query,
+        {
+          deletedAt: Date.now(),
+          deletedById: userRequestId
+        },
+        { new: true }
+      ).lean()
 
       return true
     }

@@ -17,7 +17,7 @@ export class CommentController {
     const responses = await this.commentAction.createComment(req.headers)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'create_comment_by_post_id', success: 'true' })
+    timer({ operation: 'create_comment', success: 'true' })
 
     return res.json({
       status: 200,
@@ -36,7 +36,7 @@ export class CommentController {
     const responses = await this.commentAction.updateCommentById(req.headers)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'update_comment_by_id', success: 'true' })
+    timer({ operation: 'update_comment', success: 'true' })
 
     return res.json({
       status: 200,
@@ -54,7 +54,7 @@ export class CommentController {
     const responses = await this.commentAction.deleteCommentById(req.headers)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'delete_comment_by_id', success: 'true' })
+    timer({ operation: 'delete_comment', success: 'true' })
 
     return res.json({
       status: 200,
