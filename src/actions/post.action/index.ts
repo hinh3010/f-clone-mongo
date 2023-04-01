@@ -83,6 +83,30 @@ const _validateBeforeCreatePost = (payload: IPost) => {
   return value
 }
 
+const _validateBeforeUpdatePost = (payload: any) => {
+  const schema = Joi.object({
+    content: Joi.string().optional(),
+    attachments: Joi.array().items(attachmentSchema),
+    backgroundId: Joi.custom(customValidations.objectId).optional(),
+    visibility: Joi.string()
+      .valid(...Object.values(POST_VISIBLE_TYPE))
+      .optional(),
+    tags: Joi.array().items(Joi.custom(customValidations.objectId)).optional(),
+    hashTags: Joi.array().items(Joi.string()).optional(),
+    location: locationSchema,
+
+    postId: Joi.custom(customValidations.objectId).optional(),
+    userRequestId: Joi.custom(customValidations.objectId).required()
+  })
+
+  const { error, value } = schema.validate(payload)
+
+  if (error) {
+    throw new Error(error.message ?? error)
+  }
+  return value
+}
+
 const _validateWhenSearchPost = (payload: any) => {
   const schema = Joi.object({
     userTargetId: Joi.custom(customValidations.objectId).optional(),
@@ -212,27 +236,12 @@ export class PostAction {
   updatePostById(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { postId, userRequestId } = _validateWhenSearchPost(payload)
+      const { postId, userRequestId, ...newData } = _validateBeforeUpdatePost(payload)
 
       const query = {
         deletedAt: { $exists: false },
         createdById: userRequestId,
         _id: postId
-      }
-
-      const newData = {
-        content: 'hello cac ban tre',
-        visibility: 'public',
-        type: 'normal',
-        location: {
-          other: 'Ha noi 2'
-        },
-        attachments: [
-          {
-            fileUrl: 'https://bom.so/e79j97',
-            fileType: 'image'
-          }
-        ]
       }
 
       const post = await Post.findOneAndUpdate(query, newData, { new: true }).lean()
