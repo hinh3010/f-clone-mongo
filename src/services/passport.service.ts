@@ -7,8 +7,7 @@ import {
 } from 'passport-jwt'
 
 import { getModel } from '../models'
-import { ACCOUNT_TYPE, STATUS_TYPE } from '@hellocacbantre/db-schemas/dist/enums/user.enum'
-import { type IUser } from '@hellocacbantre/db-schemas'
+import { ACCOUNT_TYPE, ACCOUNT_STATUS_TYPE, type IUser } from '@hellocacbantre/db-schemas'
 
 import { Env } from '../config'
 import { type IPayload } from './jwt.service'
@@ -59,7 +58,7 @@ class PassportService {
               return
             }
 
-            if (user.status === STATUS_TYPE.Banned) {
+            if (user.status === ACCOUNT_STATUS_TYPE.Banned) {
               done(null, false, {
                 message: 'Account banned'
               })
