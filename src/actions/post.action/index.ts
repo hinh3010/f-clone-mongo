@@ -3,8 +3,10 @@ import { getModel } from '../../models'
 import {
   validateBeforeCreatePost,
   validateBeforeUpdatePost,
+  validateWhenDeletePost,
   validateWhenSearchPost
 } from './validations'
+import createError from 'http-errors'
 
 export class PostAction {
   createPost(headers?: any) {
@@ -110,7 +112,7 @@ export class PostAction {
         match: { deletedAt: { $exists: false } }
       })
 
-      if (!post) throw new Error(`Could not find post ${postId}`)
+      if (!post) throw createError.NotFound('Post not found')
 
       return post
     }
@@ -128,7 +130,7 @@ export class PostAction {
       }
 
       const post = await Post.findOneAndUpdate(query, newData, { new: true }).lean()
-      if (!post) throw new Error(`Could not find post ${postId}`)
+      if (!post) throw createError.NotFound('Post not found')
 
       return post
     }
@@ -137,7 +139,7 @@ export class PostAction {
   deletePostById(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { postId, userRequestId } = validateWhenSearchPost(payload)
+      const { postId, userRequestId } = validateWhenDeletePost(payload)
 
       const query = {
         deletedById: { $exists: false },
@@ -147,7 +149,7 @@ export class PostAction {
 
       const post = await Post.findOne(query)
 
-      if (!post) throw new Error(`Could not find post ${postId}`)
+      if (!post) throw createError.NotFound('Post not found')
 
       await Post.updateOne(
         query,
@@ -158,7 +160,7 @@ export class PostAction {
         { new: true }
       ).lean()
 
-      return post
+      return true
     }
   }
 }

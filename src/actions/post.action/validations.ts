@@ -122,3 +122,17 @@ export const validateWhenSearchPost = (payload: any) => {
   }
   return value
 }
+
+export const validateWhenDeletePost = (payload: any) => {
+  const schema = Joi.object({
+    postId: Joi.custom(_customValidations.objectId).optional(),
+    userRequestId: Joi.custom(_customValidations.objectId).required()
+  })
+
+  const { error, value } = schema.validate(payload)
+
+  if (error) {
+    throw new Error(error.message ?? error)
+  }
+  return value
+}
