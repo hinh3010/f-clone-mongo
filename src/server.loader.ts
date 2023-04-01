@@ -12,16 +12,12 @@ import path from 'path'
 import responseTime from 'response-time'
 import xss from 'xss-clean'
 import { Env } from './config'
-import { RedisIoClient } from './databases/redisio.db'
+import { RedisIoClient } from './connections/redisio.db'
 import { restResponseTimeHistogram } from './utils/metrics'
 
 const RedisStore = connectRedis(session)
 async function connectDb(): Promise<void> {
-  await Bluebird.all([
-    import('./databases/mongo.db'),
-    import('./databases/redis.db'),
-    import('./databases/redisio.db')
-  ])
+  await Bluebird.all([import('./connections/mongo.db'), import('./connections/redisio.db')])
 }
 
 export async function serverLoader(app: express.Application): Promise<void> {

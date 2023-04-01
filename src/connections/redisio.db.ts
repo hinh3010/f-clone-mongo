@@ -10,7 +10,8 @@ export const RedisIoClient = new Redis({
   connectTimeout: 5000, // maximum time to connect to Redis, default is 10S
   enableReadyCheck: true, // check Redis connection before starting to use
   maxRetriesPerRequest: 5, // max reconnects per command execution, default is 20
-  retryStrategy: (times) => { // try reconnecting after the number of seconds returned.
+  retryStrategy: (times) => {
+    // try reconnecting after the number of seconds returned.
     if (times <= 3) {
       return 1000
     }
@@ -30,13 +31,11 @@ RedisIoClient.on('ready', function () {
   Logger.info('[RedisIo:::] ready!!')
 })
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 process.on('SIGINT', async () => {
   RedisIoClient.disconnect()
   process.exit(0)
 })
 
-// eslint-disable-next-line @typescript-eslint/no-misused-promises
 process.on('SIGTERM', async () => {
   RedisIoClient.disconnect()
   process.exit(0)

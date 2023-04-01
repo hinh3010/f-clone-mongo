@@ -17,18 +17,14 @@ function newConnection(uri: string, options: object): Connection {
     Logger.warn(`[MongoDb:::] disconnected ${this.name}.db!!`)
   })
   mongodb.on('error', function (this: MyConnection, err) {
-    Logger.error(
-      `[MongoDb:::] Failed to connect ${this.name}.db!! ${err.message}`
-    )
+    Logger.error(`[MongoDb:::] Failed to connect ${this.name}.db!! ${err.message}`)
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   process.on('SIGINT', async () => {
     await mongodb.close()
     process.exit(0)
   })
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   process.on('SIGTERM', async () => {
     await mongodb.close()
     process.exit(0)
