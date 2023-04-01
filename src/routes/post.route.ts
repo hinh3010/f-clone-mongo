@@ -30,6 +30,11 @@ export class PostRouter {
     this.router.route('/post/:postId').post(authRole.isUser, controller.searchPostById)
     this.router.route('/update/:postId').put(authRole.isUser, controller.updatePostById)
     this.router.route('/delete/:postId').delete(authRole.isUser, controller.deletePostById)
+
+    this.router
+      .route('/comment/postId')
+      .post(authRole.isUserActive, controller.createCommentByPostId)
+
     // this.router.route('/like/:id').post(controller.signUp)
     // this.router.route('/share/:id').post(controller.signUp)
   }

@@ -25,6 +25,25 @@ export class PostController {
     })
   })
 
+  createCommentByPostId = catchAsync(async (req: Request, res: Response) => {
+    const user = req.user as IUser
+
+    const payload = {
+      ...req.body,
+      createdById: user?._id,
+      postId: req.params.postId
+    }
+    const responses = await this.action.createPost(req.headers)(payload)
+
+    const timer = databaseResponseTimeHistogram.startTimer()
+    timer({ operation: 'create_comment_by_post_id', success: 'true' })
+
+    return res.json({
+      status: 200,
+      data: responses
+    })
+  })
+
   searchPosts = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as IUser
 

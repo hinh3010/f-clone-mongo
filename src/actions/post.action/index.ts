@@ -1,133 +1,16 @@
-import { type IPost, FILE_TYPE, POST_TYPE, POST_VISIBLE_TYPE } from '@hellocacbantre/db-schemas'
-import Joi from 'joi'
-import { isValidObjectId, type ObjectId } from 'mongoose'
+import { type IPost } from '@hellocacbantre/db-schemas'
 import { getModel } from '../../models'
+import {
+  validateBeforeCreatePost,
+  validateBeforeUpdatePost,
+  validateWhenSearchPost
+} from './validations'
 
-const customValidations = {
-  objectId: (value: string, helpers: any) => {
-    if (!isValidObjectId(value)) {
-      return helpers.message('"{{#label}}" must be a valid id')
-    }
-    return value as unknown as ObjectId
-  }
-}
-
-const attachmentSchema = Joi.object({
-  fileUrl: Joi.string().optional(),
-  fileType: Joi.string()
-    .valid(...Object.values(FILE_TYPE))
-    .optional(),
-  thumbnail: Joi.string().optional()
-}).optional()
-
-const locationSchema = Joi.object({
-  country: Joi.custom(customValidations.objectId).optional(),
-  province: Joi.custom(customValidations.objectId).optional(),
-  district: Joi.custom(customValidations.objectId).optional(),
-  ward: Joi.custom(customValidations.objectId).optional(),
-  street: Joi.custom(customValidations.objectId).optional(),
-  other: Joi.string().optional()
-}).optional()
-
-const shareSchema = Joi.object({
-  postId: Joi.custom(customValidations.objectId).required(),
-  sharedAt: Joi.date().required()
-}).optional()
-
-const _validateBeforeCreatePost = (payload: IPost) => {
-  const schema = Joi.object<IPost>({
-    content: Joi.string().optional(),
-
-    attachments: Joi.array()
-      .items(attachmentSchema)
-      .custom((value, helpers: any) => {
-        if (!value?.length) {
-          return helpers.message('"attachments" must not be an empty array')
-        }
-        return value
-      }),
-    backgroundId: Joi.custom(customValidations.objectId).optional(),
-
-    visibility: Joi.string()
-      .valid(...Object.values(POST_VISIBLE_TYPE))
-      .optional(),
-
-    type: Joi.string()
-      .valid(...Object.values(POST_TYPE))
-      .optional(),
-
-    tags: Joi.array().items(Joi.custom(customValidations.objectId)).optional(),
-
-    hashTags: Joi.array().items(Joi.string()).optional(),
-
-    location: locationSchema.custom((value, helpers: any) => {
-      if (!Object.keys(value).length) {
-        return helpers.message('"location" must not be an empty object')
-      }
-      return value
-    }),
-
-    shares: shareSchema,
-
-    eventId: Joi.custom(customValidations.objectId).optional(),
-    pollId: Joi.custom(customValidations.objectId).optional(),
-
-    createdById: Joi.custom(customValidations.objectId).required()
-  }).or('content', 'attachments', 'location', 'eventId', 'pollId', 'shares')
-
-  const { error, value } = schema.validate(payload)
-
-  if (error) {
-    throw new Error(error.message ?? error)
-  }
-  return value
-}
-
-const _validateBeforeUpdatePost = (payload: any) => {
-  const schema = Joi.object({
-    content: Joi.string().optional(),
-    attachments: Joi.array().items(attachmentSchema),
-    backgroundId: Joi.custom(customValidations.objectId).optional(),
-    visibility: Joi.string()
-      .valid(...Object.values(POST_VISIBLE_TYPE))
-      .optional(),
-    tags: Joi.array().items(Joi.custom(customValidations.objectId)).optional(),
-    hashTags: Joi.array().items(Joi.string()).optional(),
-    location: locationSchema,
-
-    postId: Joi.custom(customValidations.objectId).optional(),
-    userRequestId: Joi.custom(customValidations.objectId).required()
-  })
-
-  const { error, value } = schema.validate(payload)
-
-  if (error) {
-    throw new Error(error.message ?? error)
-  }
-  return value
-}
-
-const _validateWhenSearchPost = (payload: any) => {
-  const schema = Joi.object({
-    userTargetId: Joi.custom(customValidations.objectId).optional(),
-    postId: Joi.custom(customValidations.objectId).optional(),
-    userRequestId: Joi.custom(customValidations.objectId).required(),
-    page: Joi.number().default(1).min(1),
-    perPage: Joi.number().default(10).min(1)
-  })
-
-  const { error, value } = schema.validate(payload)
-
-  if (error) {
-    throw new Error(error.message ?? error)
-  }
-  return value
-}
 export class PostAction {
   createPost(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: IPost) => {
-      const vPayload = _validateBeforeCreatePost(payload)
+      const vPayload = validateBeforeCreatePost(payload)
       const newPost = await Post.create(vPayload)
       return newPost
     }
@@ -136,7 +19,7 @@ export class PostAction {
   searchPosts(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { userRequestId, perPage, page } = _validateWhenSearchPost(payload)
+      const { userRequestId, perPage, page } = validateWhenSearchPost(payload)
 
       const query = {
         deletedAt: { $exists: false },
@@ -156,7 +39,7 @@ export class PostAction {
   searchPostsByUserId(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { perPage, page, userTargetId } = _validateWhenSearchPost(payload)
+      const { perPage, page, userTargetId } = validateWhenSearchPost(payload)
 
       const query = {
         deletedAt: { $exists: false },
@@ -185,7 +68,7 @@ export class PostAction {
   searchNewsFeed(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { perPage, page } = _validateWhenSearchPost(payload)
+      const { perPage, page } = validateWhenSearchPost(payload)
 
       const query = {
         deletedAt: { $exists: false },
@@ -213,7 +96,7 @@ export class PostAction {
   searchPostById(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { postId } = _validateWhenSearchPost(payload)
+      const { postId } = validateWhenSearchPost(payload)
 
       const query = {
         deletedAt: { $exists: false },
@@ -236,7 +119,7 @@ export class PostAction {
   updatePostById(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { postId, userRequestId, ...newData } = _validateBeforeUpdatePost(payload)
+      const { postId, userRequestId, ...newData } = validateBeforeUpdatePost(payload)
 
       const query = {
         deletedAt: { $exists: false },
@@ -254,7 +137,7 @@ export class PostAction {
   deletePostById(headers?: any) {
     const Post = getModel<IPost>('Post')
     return async (payload: any) => {
-      const { postId, userRequestId } = _validateWhenSearchPost(payload)
+      const { postId, userRequestId } = validateWhenSearchPost(payload)
 
       const query = {
         deletedById: { $exists: false },
