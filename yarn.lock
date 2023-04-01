@@ -1117,7 +1117,7 @@
 
 "@hellocacbantre/db-schemas@hinh3010/packages-db-schemas":
   version "1.0.0"
-  resolved "git+ssh://git@github.com/hinh3010/packages-db-schemas.git#4f175a88b54d5fd083ceda3aebd0837cb3bc44cd"
+  resolved "git+ssh://git@github.com/hinh3010/packages-db-schemas.git#39490fed6eacf39a7b80406524ee0d24529c7d92"
 
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"

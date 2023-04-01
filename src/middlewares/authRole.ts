@@ -5,7 +5,7 @@ import { JwtService } from '../services/jwt.service'
 
 import { getModel } from '../models'
 import { type IUser } from '@hellocacbantre/db-schemas'
-import { ROLES_TYPE } from '@hellocacbantre/db-schemas/dist/enums/user.enum'
+import { ACCOUNT_ROLES_TYPE } from '@hellocacbantre/db-schemas'
 
 const _checkStatusActive = (user: IUser, next: NextFunction) => {
   if (user.status !== 'active') {
@@ -72,7 +72,7 @@ class AuthRole {
 
       _checkStatusActive(user, next)
 
-      if (!roles.includes(ROLES_TYPE.Admin)) {
+      if (!roles.includes(ACCOUNT_ROLES_TYPE.Admin)) {
         return next(createError.Forbidden('You do not have permission'))
       }
 
@@ -99,7 +99,7 @@ class AuthRole {
 
       _checkStatusActive(user, next)
 
-      if (!roles.includes(ROLES_TYPE.SuperAdmin)) {
+      if (!roles.includes(ACCOUNT_ROLES_TYPE.SuperAdmin)) {
         return next(createError.Forbidden('You do not have permission'))
       }
 
@@ -111,7 +111,7 @@ class AuthRole {
   })
 
   isValid = catchAsync(
-    (req: Request, res: Response, next: NextFunction) => async (role: ROLES_TYPE) => {
+    (req: Request, res: Response, next: NextFunction) => async (role: ACCOUNT_ROLES_TYPE) => {
       const { authorization } = req.headers
       if (authorization) {
         const token = authorization.split(' ')[1]

@@ -1,6 +1,4 @@
-import { type IPost } from '@hellocacbantre/db-schemas'
-import { FILE_TYPES } from '@hellocacbantre/db-schemas/dist/enums/file.enum'
-import { POST_TYPE, POST_VISIBLE_TYPE } from '@hellocacbantre/db-schemas/dist/enums/post.enum'
+import { type IPost, FILE_TYPE, POST_TYPE, POST_VISIBLE_TYPE } from '@hellocacbantre/db-schemas'
 import Joi from 'joi'
 import { isValidObjectId, type ObjectId } from 'mongoose'
 import { getModel } from '../../models'
@@ -17,7 +15,7 @@ const customValidations = {
 const attachmentSchema = Joi.object({
   fileUrl: Joi.string().optional(),
   fileType: Joi.string()
-    .valid(...Object.values(FILE_TYPES))
+    .valid(...Object.values(FILE_TYPE))
     .optional(),
   thumbnail: Joi.string().optional()
 }).optional()
