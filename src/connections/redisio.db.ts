@@ -27,10 +27,6 @@ RedisIoClient.on('error', (err) => {
   Logger.error(`[RedisIo:::] client Error ${err}`)
 })
 
-RedisIoClient.on('ready', function () {
-  Logger.info('[RedisIo:::] ready!!')
-})
-
 process.on('SIGINT', async () => {
   RedisIoClient.disconnect()
   process.exit(0)
