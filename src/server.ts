@@ -1,6 +1,6 @@
 import express, { type Request, type Response, type Router } from 'express'
 import 'reflect-metadata'
-import Logger from './@loggers/logger.pino'
+import Logger from './@loggers'
 import { type IError } from './@types'
 import { Env } from './config'
 import { PlatformRouter } from './routes/index.route'

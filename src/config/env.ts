@@ -20,7 +20,7 @@ export const Env = {
     }
   },
   REDIS_CONNECTION: {
-    URI: process.env.REDIS_URI,
+    URI: process.env.REDIS_URI ?? '',
     HOST: process.env.REDIS_HOST ?? 'localhost',
     PORT: process.env.REDIS_PORT ? parseInt(process.env.REDIS_PORT) : 6379,
     PASSWORD: process.env.REDIS_PASSWORD,

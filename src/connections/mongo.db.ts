@@ -1,6 +1,6 @@
 // import { Promise as BluebirdPromise } from 'bluebird'
 import mongoose, { type Connection } from 'mongoose'
-import Logger from '../@loggers/logger.pino'
+import Logger from '../@loggers'
 import { Env } from '../config'
 
 interface MyConnection extends mongoose.Connection {
@@ -17,7 +17,7 @@ function newConnection(uri: string, options: object): Connection {
     Logger.warn(`[MongoDb:::] disconnected ${this.name}.db!!`)
   })
   mongodb.on('error', function (this: MyConnection, err) {
-    Logger.error(`[MongoDb:::] Failed to connect ${this.name}.db!! ${err.message}`)
+    Logger.error(err, `[MongoDb:::] Failed to connect ${this.name}.db!! ${err.message}`)
   })
 
   process.on('SIGINT', async () => {

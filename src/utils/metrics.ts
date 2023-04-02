@@ -1,6 +1,6 @@
 import { type Application, type Request, type Response } from 'express'
 import client, { collectDefaultMetrics, register } from 'prom-client'
-import Logger from '../@loggers/logger.pino'
+import Logger from '../@loggers'
 
 export const restResponseTimeHistogram = new client.Histogram({
   name: 'rest_response_time_duration_seconds',

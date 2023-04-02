@@ -1,10 +1,10 @@
 import { type Request, type Response } from 'express'
-import { Redis } from '../packages'
 import catchAsync from '../middlewares/catchAsync'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
 
-import { getModel } from '../models'
 import { type IUser } from '@hellocacbantre/db-schemas'
+import { falcol } from '../connections/redisio.db'
+import { getModel } from '../models'
 
 async function sleep(ms: number): Promise<any> {
   return new Promise((resolve) => setTimeout(resolve, ms))
@@ -15,7 +15,7 @@ export class UserController {
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'auth_sign_up', success: 'true' })
 
-    const response = await Redis.get('adu')
+    const response = await falcol.get('adu')
 
     if (response) return res.json({ response })
 
@@ -23,11 +23,13 @@ export class UserController {
     setTimeout(async () => {
       await sleep(4000)
       console.log('adu')
-      const e = await Redis.edit('adu', { adu: 'adu' }, 600)
+      const e = await falcol.setJSON('adu', { adu: 'adu' })
+      await falcol.expire('adu', 600)
       console.log(e)
     }, 0)
 
-    await Redis.set('adu', { ec: 'ec' }, 600)
+    await falcol.setJSON('adu', { ec: 'ec' })
+    await falcol.expire('adu', 600)
 
     const User = getModel<IUser>('User')
     const responses = await User.find().limit(5).lean()

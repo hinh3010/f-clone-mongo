@@ -2,7 +2,7 @@ import { type Application, type Request, type Response } from 'express'
 import swaggerJsdoc from 'swagger-jsdoc'
 import swaggerUi from 'swagger-ui-express'
 import { version } from '../../../package.json'
-import Logger from '../../@loggers/logger.pino'
+import Logger from '../../@loggers'
 import * as swaggerDocument from './swagger.json'
 
 const options: swaggerJsdoc.Options = {

@@ -1,8 +1,19 @@
 {
-  "name": "node_ts_docker",
+  "name": "@hellocacbantre/platform",
   "version": "1.0.0",
   "description": "",
   "main": "dist/src/server.js",
+  "types": "dist/index.d.ts",
+  "keywords": [
+    "hellocacbantre"
+  ],
+  "author": "hinh3010",
+  "license": "hinh3010",
+  "repository": {
+    "type": "git",
+    "url": "hinh3010/packages-platform",
+    "url2": "git@gitlab.com:hellocacbantre/packages/platform.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/server.js",
@@ -14,11 +25,10 @@
     "docker:dev": "docker-compose -f docker-compose.yml -f docker-compose.dev.yml up",
     "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ADU",
   "dependencies": {
     "@hellocacbantre/db-schemas": "hinh3010/packages-db-schemas",
+    "@hellocacbantre/logger": "hinh3010/packages-logger",
+    "@hellocacbantre/redis": "hinh3010/packages-redis",
     "@sentry/node": "^7.44.2",
     "@sentry/tracing": "^7.44.2",
     "agenda": "^5.0.0",
@@ -28,14 +38,12 @@
     "connect-redis": "^6.1.3",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
-    "dayjs": "^1.11.7",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-session": "^1.17.3",
     "helmet": "^6.0.1",
     "http-errors": "^2.0.0",
-    "ioredis": "^5.3.1",
     "joi": "^17.7.0",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.4",
@@ -47,10 +55,7 @@
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
-    "pino": "^7.0.2",
-    "pino-pretty": "^7.1.0",
     "prom-client": "^14.0.0",
-    "redis": "^4.6.4",
     "redlock": "^5.0.0-beta.2",
     "reflect-metadata": "^0.1.13",
     "remove": "^0.1.5",
@@ -81,7 +86,6 @@
     "@types/passport-google-oauth20": "^2.0.11",
     "@types/passport-jwt": "^3.0.8",
     "@types/passport-local": "^1.0.34",
-    "@types/pino": "^6.3.11",
     "@types/response-time": "^2.3.5",
     "@types/sharp": "^0.31.0",
     "@types/swagger-jsdoc": "^6.0.1",
