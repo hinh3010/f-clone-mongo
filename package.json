@@ -28,7 +28,9 @@
   "dependencies": {
     "@hellocacbantre/db-schemas": "hinh3010/packages-db-schemas",
     "@hellocacbantre/logger": "hinh3010/packages-logger",
+    "@hellocacbantre/multer": "hinh3010/packages-multer",
     "@hellocacbantre/redis": "hinh3010/packages-redis",
+    "@hellocacbantre/sentry": "hinh3010/packages-sentry",
     "@sentry/node": "^7.44.2",
     "@sentry/tracing": "^7.44.2",
     "agenda": "^5.0.0",
