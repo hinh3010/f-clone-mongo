@@ -12,6 +12,7 @@ export class PlatformRouter {
   public routes: Router
   private readonly context: IContext
 
+  //
   constructor(context: IContext) {
     this.context = context
     this.routes = Router()
