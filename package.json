@@ -26,6 +26,7 @@
     "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up"
   },
   "dependencies": {
+    "@hellocacbantre/context": "hinh3010/context",
     "@hellocacbantre/db-schemas": "hinh3010/packages-db-schemas",
     "@hellocacbantre/logger": "hinh3010/packages-logger",
     "@hellocacbantre/multer": "hinh3010/packages-multer",
