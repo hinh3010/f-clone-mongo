@@ -3,9 +3,16 @@ import { type Request, type Response } from 'express'
 import { LikeAction } from '../actions/like.action'
 import catchAsync from '../middlewares/catchAsync'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
+import { type IContext } from '@hellocacbantre/context'
 
 export class LikeController {
-  constructor(private readonly likeAction: LikeAction = new LikeAction()) {}
+  private readonly likeAction: LikeAction
+  private readonly context: IContext
+
+  constructor(context: IContext) {
+    this.likeAction = new LikeAction()
+    this.context = context
+  }
 
   like = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as IUser
@@ -14,7 +21,7 @@ export class LikeController {
       ...req.body,
       createdById: user?._id
     }
-    const responses = await this.likeAction.like(req.headers)(payload)
+    const responses = await this.likeAction.like(this.context)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'like', success: 'true' })
@@ -32,7 +39,7 @@ export class LikeController {
       ...req.body,
       createdById: user?._id
     }
-    const responses = await this.likeAction.like(req.headers)(payload)
+    const responses = await this.likeAction.like(this.context)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'dislike', success: 'true' })

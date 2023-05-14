@@ -15,6 +15,7 @@
     "url2": "git@gitlab.com:hellocacbantre/packages/platform.git"
   },
   "scripts": {
+    "build": "rm -rf dist && tsc",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node dist/server.js",
     "dev": "SET NODE_ENV=dev tsc && concurrently \"tsc -w\" \"nodemon dist/server.js\"",
@@ -26,12 +27,15 @@
     "docker:test": "docker-compose -f docker-compose.yml -f docker-compose.test.yml up"
   },
   "dependencies": {
+    "@hellocacbantre/attachments": "hinh3010/services-attachments",
+    "@hellocacbantre/auth-role": "hinh3010/actions-auth-role",
     "@hellocacbantre/context": "hinh3010/context",
     "@hellocacbantre/db-schemas": "hinh3010/packages-db-schemas",
     "@hellocacbantre/logger": "hinh3010/packages-logger",
     "@hellocacbantre/multer": "hinh3010/packages-multer",
     "@hellocacbantre/redis": "hinh3010/packages-redis",
     "@hellocacbantre/sentry": "hinh3010/packages-sentry",
+    "@hellocacbantre/services-auth": "hinh3010/services-auth",
     "@sentry/node": "^7.44.2",
     "@sentry/tracing": "^7.44.2",
     "agenda": "^5.0.0",
@@ -45,6 +49,7 @@
     "express": "^4.18.2",
     "express-mongo-sanitize": "^2.2.0",
     "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
     "helmet": "^6.0.1",
     "http-errors": "^2.0.0",
     "joi": "^17.7.0",

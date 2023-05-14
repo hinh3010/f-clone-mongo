@@ -3,9 +3,14 @@ import { type Request, type Response } from 'express'
 import { PostAction } from '../actions/post.action'
 import catchAsync from '../middlewares/catchAsync'
 import { databaseResponseTimeHistogram } from '../utils/metrics'
+import { type IContext } from '@hellocacbantre/context'
 
 export class PostController {
-  constructor(private readonly postAction: PostAction = new PostAction()) {}
+  private readonly postAction: PostAction
+
+  constructor(context: IContext) {
+    this.postAction = new PostAction(context)
+  }
 
   createPost = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as IUser
@@ -14,7 +19,12 @@ export class PostController {
       ...req.body,
       createdById: user?._id
     }
-    const responses = await this.postAction.createPost(req.headers)(payload)
+    console.log(
+      '🚀 ~ file: post.controller.ts:19 ~ PostController ~ createPost=catchAsync ~ payload:',
+
+      payload
+    )
+    const responses = await this.postAction.createPost(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'create_post', success: 'true' })
@@ -32,7 +42,7 @@ export class PostController {
       userRequestId: user?._id,
       ...req.body
     }
-    const responses = await this.postAction.searchPosts(req.headers)(payload)
+    const responses = await this.postAction.searchPosts(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'search_posts', success: 'true' })
@@ -51,7 +61,7 @@ export class PostController {
       userRequestId: user?._id,
       ...req.body
     }
-    const responses = await this.postAction.searchPostsByUserId(req.headers)(payload)
+    const responses = await this.postAction.searchPostsByUserId(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'search_posts_by_user_' + req.params.userId, success: 'true' })
@@ -69,7 +79,7 @@ export class PostController {
       userRequestId: user?._id,
       ...req.body
     }
-    const responses = await this.postAction.searchNewsFeed(req.headers)(payload)
+    const responses = await this.postAction.searchNewsFeed(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'news_feed', success: 'true' })
@@ -88,7 +98,7 @@ export class PostController {
       postId: req.params.postId,
       ...req.body
     }
-    const responses = await this.postAction.searchPostById(req.headers)(payload)
+    const responses = await this.postAction.searchPostById(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'post_by_id', success: 'true' })
@@ -107,7 +117,7 @@ export class PostController {
       postId: req.params.postId,
       ...req.body
     }
-    const responses = await this.postAction.updatePostById(req.headers)(payload)
+    const responses = await this.postAction.updatePostById(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'update_post_by_id', success: 'true' })
@@ -125,7 +135,7 @@ export class PostController {
       userRequestId: user?._id,
       postId: req.params.postId
     }
-    const responses = await this.postAction.deletePostById(req.headers)(payload)
+    const responses = await this.postAction.deletePostById(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'delete_post_by_id', success: 'true' })

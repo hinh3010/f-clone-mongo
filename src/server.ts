@@ -1,11 +1,13 @@
+import { type IContext } from '@hellocacbantre/context'
 import express, { type Request, type Response, type Router } from 'express'
 import 'reflect-metadata'
 import Logger from './@loggers'
 import { type IError } from './@types'
 import { Env } from './config'
+import { connectDb } from './connections/mongo.db'
 import { PlatformRouter } from './routes/index.route'
 import { serverLoader } from './server.loader'
-import { type IContext } from '@hellocacbantre/context'
+import { getRedisClient } from './connections/redisio.db'
 
 // import { startMetricsServer } from './utils/metrics'
 // import swaggerDocs from './utils/swagger'
@@ -21,28 +23,14 @@ class Server {
   public app: express.Application = express()
   readonly context: IContext = {
     mongoDb: {
-      uri: Env.MONGO_CONNECTION.URI,
-      options: Env.MONGO_CONNECTION.OPTIONS
+      instance: connectDb(Env.MONGO_CONNECTION.URI, {
+        ...Env.MONGO_CONNECTION.OPTIONS,
+        dbName: 'platform'
+      })
     },
     redisDb: {
-      uri: Env.REDIS_CONNECTION.URI
+      instance: getRedisClient(Env.REDIS_CONNECTION.URI)
     }
-  }
-
-  constructor() {
-    void serverLoader(this.app)
-
-    this.app.get('/', (_: Request, res: Response) => {
-      res.json({
-        message: `welcome service ${Env.SERVICE_NAME}`
-      })
-    })
-
-    this.app.use('/platform', this.routes())
-
-    this.app.use(handlerError)
-
-    this.listen(Number(Env.PORT))
   }
 
   routes(): Router {
@@ -56,7 +44,26 @@ class Server {
       // startMetricsServer(this.app, port)
     })
   }
+
+  async start() {
+    console.log('adu')
+    await serverLoader(this.context)(this.app)
+
+    this.app.use(`/${Env.SERVICE_NAME}`, this.routes())
+
+    this.app.get('/*', (_: Request, res: Response) => {
+      res.json({
+        message: `welcome service ${Env.SERVICE_NAME}`
+      })
+    })
+
+    this.app.use(handlerError)
+
+    this.listen(Number(Env.PORT))
+  }
 }
 
-// eslint-disable-next-line no-new
-new Server()
+void (async () => {
+  const server = new Server()
+  await server.start()
+})()
