@@ -1,21 +1,22 @@
-import { type Request, type Response, Router } from 'express'
+import { AuthRole } from '@hellocacbantre/auth-role'
+import { type IContext } from '@hellocacbantre/context'
+import { type Request, type Response } from 'express'
 import { PostController } from '../controllers/post.controller'
-import AuthRole from '../middlewares/authRole'
+import { BaseRouter } from './base.router'
 
 const ROUTER_NAME = 'posts'
 
-export class PostRouter {
-  public router: Router
+export class PostRouter extends BaseRouter {
+  private readonly authRole: AuthRole
+  private readonly controller: PostController
 
-  constructor(
-    private readonly controller: PostController = new PostController(),
-    private readonly authRole: AuthRole = new AuthRole()
-  ) {
-    this.router = Router()
-    this.routes()
+  constructor(context: IContext) {
+    super(context)
+    this.controller = new PostController(context)
+    this.authRole = new AuthRole(context)
   }
 
-  routes(): void {
+  protected configureRoutes(): void {
     const { controller, authRole } = this
 
     this.router.get('/', (req: Request, res: Response) => {
@@ -23,9 +24,9 @@ export class PostRouter {
         message: `welcome service ${ROUTER_NAME}`
       })
     })
-    this.router.route('/create').post(authRole.isUserActive, controller.createPost)
+    this.router.route('/create').post(authRole.isUser, controller.createPost)
     this.router.route('/posts').post(authRole.isUser, controller.searchPosts)
-    this.router.route('/posts/:userId').post(authRole.isUserActive, controller.searchPostsByUserId)
+    this.router.route('/posts/:userId').post(authRole.isUser, controller.searchPostsByUserId)
     this.router.route('/news-feed').post(authRole.isUser, controller.newsFeed)
     this.router.route('/post/:postId').post(authRole.isUser, controller.searchPostById)
     this.router.route('/update/:postId').put(authRole.isUser, controller.updatePostById)

@@ -1,21 +1,22 @@
-import { type Request, type Response, Router } from 'express'
+import { AuthRole } from '@hellocacbantre/auth-role'
+import { type IContext } from '@hellocacbantre/context'
+import { type Request, type Response } from 'express'
 import { LikeController } from '../controllers/like.controller'
-import AuthRole from '../middlewares/authRole'
+import { BaseRouter } from './base.router'
 
 const ROUTER_NAME = 'like'
 
-export class LikeRouter {
-  public router: Router
+export class LikeRouter extends BaseRouter {
+  private readonly authRole: AuthRole
+  private readonly controller: LikeController
 
-  constructor(
-    private readonly controller: LikeController = new LikeController(),
-    private readonly authRole: AuthRole = new AuthRole()
-  ) {
-    this.router = Router()
-    this.routes()
+  constructor(context: IContext) {
+    super(context)
+    this.controller = new LikeController(context)
+    this.authRole = new AuthRole(context)
   }
 
-  routes(): void {
+  protected configureRoutes(): void {
     const { controller, authRole } = this
 
     this.router.get('/', (req: Request, res: Response) => {

@@ -1,10 +1,14 @@
+import { type IContext } from '@hellocacbantre/context'
 import express, { type Request, type Response, type Router } from 'express'
 import 'reflect-metadata'
 import Logger from './@loggers'
 import { type IError } from './@types'
 import { Env } from './config'
+import { connectDb } from './connections/mongo.db'
 import { PlatformRouter } from './routes/index.route'
 import { serverLoader } from './server.loader'
+import { getRedisClient } from './connections/redisio.db'
+
 // import { startMetricsServer } from './utils/metrics'
 // import swaggerDocs from './utils/swagger'
 
@@ -17,25 +21,20 @@ const handlerError = (err: IError, _: Request, res: Response, __: any) => {
 
 class Server {
   public app: express.Application = express()
-
-  constructor() {
-    void serverLoader(this.app)
-
-    this.app.get('/', (_: Request, res: Response) => {
-      res.json({
-        message: `welcome service ${Env.SERVICE_NAME}`
+  readonly context: IContext = {
+    mongoDb: {
+      instance: connectDb(Env.MONGO_CONNECTION.URI, {
+        ...Env.MONGO_CONNECTION.OPTIONS,
+        dbName: 'platform'
       })
-    })
-
-    this.app.use('/platform', this.routes())
-
-    this.app.use(handlerError)
-
-    this.listen(Number(Env.PORT))
+    },
+    redisDb: {
+      instance: getRedisClient(Env.REDIS_CONNECTION.URI)
+    }
   }
 
   routes(): Router {
-    return new PlatformRouter().routes
+    return new PlatformRouter(this.context).routes
   }
 
   public listen(port: number): void {
@@ -45,7 +44,26 @@ class Server {
       // startMetricsServer(this.app, port)
     })
   }
+
+  async start() {
+    console.log('adu')
+    await serverLoader(this.context)(this.app)
+
+    this.app.use(`/${Env.SERVICE_NAME}`, this.routes())
+
+    this.app.get('/*', (_: Request, res: Response) => {
+      res.json({
+        message: `welcome service ${Env.SERVICE_NAME}`
+      })
+    })
+
+    this.app.use(handlerError)
+
+    this.listen(Number(Env.PORT))
+  }
 }
 
-// eslint-disable-next-line no-new
-new Server()
+void (async () => {
+  const server = new Server()
+  await server.start()
+})()

@@ -1,11 +1,14 @@
+import { type IContext } from '@hellocacbantre/context'
 import { LIKE_ENTITY_TYPE, type ILike, type IPost } from '@hellocacbantre/db-schemas'
 import createError from 'http-errors'
-import { getModel } from '../../models'
+import { getStoreDb } from '../../connections/mongo.db'
 import { validateBeforeLike } from './validations'
 
 export class LikeAction {
-  like(headers?: any) {
+  like(context: IContext) {
+    const { getModel } = getStoreDb(context)
     const Like = getModel<ILike>('Comment')
+
     return async (payload: ILike) => {
       const vPayload = validateBeforeLike(payload)
       const { entityId, entityType, createdById, reactType } = vPayload
@@ -55,8 +58,10 @@ export class LikeAction {
     }
   }
 
-  dislike(headers?: any) {
+  dislike(context: IContext) {
+    const { getModel } = getStoreDb(context)
     const Like = getModel<ILike>('Comment')
+
     return async (payload: ILike) => {
       const vPayload = validateBeforeLike(payload)
       const { entityId, entityType, createdById } = vPayload

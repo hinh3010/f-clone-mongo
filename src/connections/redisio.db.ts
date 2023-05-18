@@ -1,9 +1,19 @@
-import { createConnect, SimpleFalcon, SimpleRedlock } from '@hellocacbantre/redis'
-import { Env } from '../config'
+import { SimpleFalcon, SimpleRedlock, createConnect } from '@hellocacbantre/redis'
+import { type IContext } from '@hellocacbantre/context'
 
-export const RedisIoClient = createConnect(Env.REDIS_CONNECTION.URI)
-export const falcol = new SimpleFalcon(RedisIoClient)
-export const redlock = new SimpleRedlock([RedisIoClient])
+export const getRedisClient = (uri: string) => createConnect(uri)
+
+export const getFalcol = (context: IContext): SimpleFalcon => {
+  const { redisDb } = context
+  const falcol = new SimpleFalcon(redisDb.instance)
+  return falcol
+}
+
+export const getRedlock = (context: IContext): SimpleRedlock => {
+  const { redisDb } = context
+  const redlock = new SimpleRedlock([redisDb.instance])
+  return redlock
+}
 
 // import Redis from 'ioredis'
 // import Logger from '../@loggers/logger.pino'

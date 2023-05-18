@@ -1,6 +1,7 @@
+import { type IContext } from '@hellocacbantre/context'
 import { COMMENT_ENTITY_TYPE, type IComment, type IPost } from '@hellocacbantre/db-schemas'
 import createError from 'http-errors'
-import { getModel } from '../../models'
+import { getStoreDb } from '../../connections/mongo.db'
 import {
   validateBeforeCreateComment,
   validateBeforeUpdateComment,
@@ -8,8 +9,10 @@ import {
 } from './validations'
 
 export class CommentAction {
-  createComment(headers?: any) {
+  createComment(context: IContext) {
+    const { getModel } = getStoreDb(context)
     const Comment = getModel<IComment>('Comment')
+
     return async (payload: IComment) => {
       const vPayload = validateBeforeCreateComment(payload)
       const { entityId, entityType, parentId } = vPayload
@@ -38,8 +41,10 @@ export class CommentAction {
     }
   }
 
-  updateCommentById(headers?: any) {
+  updateCommentById(context: IContext) {
+    const { getModel } = getStoreDb(context)
     const Comment = getModel<IComment>('Comment')
+
     return async (payload: any) => {
       const { commentId, userRequestId, ...newData } = validateBeforeUpdateComment(payload)
 
@@ -56,8 +61,10 @@ export class CommentAction {
     }
   }
 
-  deleteCommentById(headers?: any) {
+  deleteCommentById(context: IContext) {
+    const { getModel } = getStoreDb(context)
     const Comment = getModel<IComment>('Comment')
+
     return async (payload: any) => {
       const { commentId, userRequestId } = validateWhenDeleteComment(payload)
 
