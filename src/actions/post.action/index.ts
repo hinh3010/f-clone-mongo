@@ -1,5 +1,10 @@
 import { type IContext } from '@hellocacbantre/context'
-import { type IPost } from '@hellocacbantre/db-schemas'
+import {
+  type IUser,
+  type IPost,
+  type IBackgroundPost,
+  POST_ENTITY_TYPE
+} from '@hellocacbantre/db-schemas'
 import createError from 'http-errors'
 import { getStoreDb } from '../../connections/mongo.db'
 import {
@@ -8,6 +13,57 @@ import {
   validateWhenDeletePost,
   validateWhenSearchPost
 } from './validations'
+
+const fetchPosts = (context: IContext) => {
+  const { getModel } = getStoreDb(context)
+  const Post = getModel<IPost>('Post')
+  const User = getModel<IUser>('User')
+  const BackgroundPost = getModel<IBackgroundPost>('BackgroundPost')
+
+  return async (query: any, params: any) => {
+    const { skip, limit } = params
+    const posts = await Post.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean()
+      .populate({
+        path: 'createdById',
+        select: 'email firstName lastName gender avatarUrl coverImageUrl dateOfBirth phoneNumber',
+        model: User,
+        match: { deletedAt: { $exists: false } }
+      })
+      .populate({
+        path: 'backgroundId',
+        model: BackgroundPost,
+        match: { deletedAt: { $exists: false } }
+      })
+    return posts
+  }
+}
+
+const fetchPost = (context: IContext) => {
+  const { getModel } = getStoreDb(context)
+  const Post = getModel<IPost>('Post')
+  const User = getModel<IUser>('User')
+  const BackgroundPost = getModel<IBackgroundPost>('BackgroundPost')
+
+  return async (query: any) => {
+    const posts = await Post.findOne(query)
+      .sort({ createdAt: -1 })
+      .lean()
+      .populate({
+        path: 'createdById',
+        select: 'firstName lastName reverseName email gender',
+        model: User
+      })
+      .populate({
+        path: 'backgroundId',
+        model: BackgroundPost
+      })
+    return posts
+  }
+}
 
 export class PostAction {
   private readonly context: IContext
@@ -24,29 +80,40 @@ export class PostAction {
     return newPost
   }
 
-  searchPosts = async (payload: any) => {
+  searchNewsFeed = async (payload: any) => {
     const { getModel } = getStoreDb(this.context)
     const Post = getModel<IPost>('Post')
-    const { userRequestId, perPage, page } = validateWhenSearchPost(payload)
+    const { limit, page, pageTargetId, groupTargetId, userTargetId } =
+      validateWhenSearchPost(payload)
 
     const query = {
       deletedAt: { $exists: false },
-      createdById: userRequestId
+      visibility: 'public'
+    } as any
+
+    if (pageTargetId) {
+      query.entityType = POST_ENTITY_TYPE.Page
+      query.entityId = pageTargetId
+    } else if (groupTargetId) {
+      query.entityType = POST_ENTITY_TYPE.Group
+      query.entityId = groupTargetId
     }
 
+    if (userTargetId) query.createdById = userTargetId
+
     const totalPosts = await Post.countDocuments(query)
-    const skip = perPage * (page - 1)
-    const totalPages = Math.ceil(totalPosts / perPage)
+    const skip = limit * (page - 1)
+    const totalPages = Math.ceil(totalPosts / limit)
 
-    const posts = await Post.find(query).sort({ createdAt: -1 }).skip(skip).limit(perPage).lean()
+    const posts = await fetchPosts(this.context)(query, { skip, limit })
 
-    return { docs: posts, totalDocs: totalPosts, perPage, page, totalPages }
+    return { docs: posts, totalDocs: totalPosts, limit, page, totalPages }
   }
 
   searchPostsByUserId = async (payload: any) => {
     const { getModel } = getStoreDb(this.context)
     const Post = getModel<IPost>('Post')
-    const { perPage, page, userTargetId } = validateWhenSearchPost(payload)
+    const { limit, page, userTargetId } = validateWhenSearchPost(payload)
 
     const query = {
       deletedAt: { $exists: false },
@@ -55,52 +122,15 @@ export class PostAction {
     }
 
     const totalPosts = await Post.countDocuments(query)
-    const skip = perPage * (page - 1)
-    const totalPages = Math.ceil(totalPosts / perPage)
+    const skip = limit * (page - 1)
+    const totalPages = Math.ceil(totalPosts / limit)
 
-    const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(perPage)
-      .populate({
-        path: 'createdById',
-        select: 'email firstName lastName gender avatarUrl coverImageUrl dateOfBirth phoneNumber',
-        match: { deletedAt: { $exists: false } }
-      })
+    const posts = await fetchPosts(this.context)(query, { skip, limit })
 
-    return { docs: posts, totalDocs: totalPosts, perPage, page, totalPages }
-  }
-
-  searchNewsFeed = async (payload: any) => {
-    const { getModel } = getStoreDb(this.context)
-    const Post = getModel<IPost>('Post')
-    const { perPage, page } = validateWhenSearchPost(payload)
-
-    const query = {
-      deletedAt: { $exists: false },
-      visibility: 'public'
-    }
-
-    const totalPosts = await Post.countDocuments(query)
-    const skip = perPage * (page - 1)
-    const totalPages = Math.ceil(totalPosts / perPage)
-
-    const posts = await Post.find(query)
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(perPage)
-      .populate({
-        path: 'createdById',
-        select: 'email firstName lastName gender avatarUrl coverImageUrl dateOfBirth phoneNumber',
-        match: { deletedAt: { $exists: false } }
-      })
-
-    return { docs: posts, totalDocs: totalPosts, perPage, page, totalPages }
+    return { docs: posts, totalDocs: totalPosts, limit, page, totalPages }
   }
 
   searchPostById = async (payload: any) => {
-    const { getModel } = getStoreDb(this.context)
-    const Post = getModel<IPost>('Post')
     const { postId } = validateWhenSearchPost(payload)
 
     const query = {
@@ -109,15 +139,31 @@ export class PostAction {
       _id: postId
     }
 
-    const post = await Post.findOne(query).populate({
-      path: 'createdById',
-      select: 'email firstName lastName gender avatarUrl coverImageUrl dateOfBirth phoneNumber',
-      match: { deletedAt: { $exists: false } }
-    })
+    const post = await fetchPost(this.context)(query)
 
     if (!post) throw createError.NotFound('Post not found')
 
     return post
+  }
+
+  searchPosts = async (payload: any) => {
+    const { getModel } = getStoreDb(this.context)
+    const Post = getModel<IPost>('Post')
+
+    const { limit, page } = validateWhenSearchPost(payload)
+
+    const query = {
+      deletedAt: { $exists: false },
+      visibility: 'public'
+    }
+
+    const totalPosts = await Post.countDocuments(query)
+    const skip = limit * (page - 1)
+    const totalPages = Math.ceil(totalPosts / limit)
+
+    const posts = await fetchPosts(this.context)(query, { skip, limit })
+
+    return { docs: posts, totalDocs: totalPosts, limit, page, totalPages }
   }
 
   updatePostById = async (payload: any) => {

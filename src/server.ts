@@ -46,7 +46,6 @@ class Server {
   }
 
   async start() {
-    console.log('adu')
     await serverLoader(this.context)(this.app)
 
     this.app.use(`/${Env.SERVICE_NAME}`, this.routes())
