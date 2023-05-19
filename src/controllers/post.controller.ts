@@ -63,8 +63,7 @@ export class PostController {
 
     const payload = {
       userRequestId: user?._id,
-      postId: req.params.postId,
-      ...req.body
+      postId: req.params.postId
     }
     const responses = await this.postAction.searchPostById(payload)
 

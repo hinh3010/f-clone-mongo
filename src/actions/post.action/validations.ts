@@ -108,10 +108,10 @@ export const validateBeforeUpdatePost = (payload: any) => {
 
 export const validateWhenSearchPost = (payload: any) => {
   const schema = Joi.object({
+    postId: Joi.custom(_customValidations.objectId).optional(),
     userTargetId: Joi.custom(_customValidations.objectId).optional(),
-    postTargetId: Joi.custom(_customValidations.objectId).optional(),
     groupTargetId: Joi.custom(_customValidations.objectId).optional(),
-    pageId: Joi.custom(_customValidations.objectId).optional(),
+    pageTargetId: Joi.custom(_customValidations.objectId).optional(),
     userRequestId: Joi.custom(_customValidations.objectId).required(),
     page: Joi.number().default(1).min(1),
     limit: Joi.number().default(10).min(1)

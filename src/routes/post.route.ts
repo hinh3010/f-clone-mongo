@@ -27,7 +27,7 @@ export class PostRouter extends BaseRouter {
     this.router.route('/news-feed').get(authRole.isUser, controller.newsFeed)
     this.router.route('/create').post(authRole.isUser, controller.createPost)
     this.router.route('/posts/:userId').post(authRole.isUser, controller.searchPostsByUserId)
-    this.router.route('/post/:postId').post(authRole.isUser, controller.searchPostById)
+    this.router.route('/post/:postId').get(authRole.isUser, controller.searchPostById)
     this.router.route('/update/:postId').put(authRole.isUser, controller.updatePostById)
     this.router.route('/delete/:postId').delete(authRole.isUser, controller.deletePostById)
     // this.router.route('/like/:id').post(controller.signUp)
