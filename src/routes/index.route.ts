@@ -9,6 +9,7 @@ import { PostRouter } from './post.route'
 // import { UserRouter } from './user.route'
 import { type IContext } from '@hellocacbantre/context'
 import { GroupsRouter } from './groups.route'
+import { PagesRouter } from './pages.route'
 
 export class PlatformRouter {
   public routes: Router
@@ -23,6 +24,7 @@ export class PlatformRouter {
     this.routes.use('/attachments', new AttachmentsRouter(this.context).getRouter())
     this.routes.use('/posts', new PostRouter(this.context).getRouter())
     this.routes.use('/groups', new GroupsRouter(this.context).getRouter())
+    this.routes.use('/pages', new PagesRouter(this.context).getRouter())
     // this.routes.use('/comments', new CommentRouter(this.context).getRouter())
     // this.routes.use('/tests', new TestsRouter(this.context).getRouter())
     // this.routes.use('/users', new UserRouter(this.context).getRouter())
