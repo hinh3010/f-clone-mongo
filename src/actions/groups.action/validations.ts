@@ -94,6 +94,7 @@ export const validateWhenSearchGroups = (payload: ISchemaWhenSearchGroups): ISch
 
 interface ISchemaWhenSearchGroup {
   groupId: ObjectId
+  userRequestId: ObjectId
 }
 export const validateWhenSearchGroup = (payload: ISchemaWhenSearchGroup): ISchemaWhenSearchGroup => {
   const schema = Joi.object({

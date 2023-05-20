@@ -36,11 +36,11 @@ export class GroupsAction {
     const { getModel } = getStoreDb(this.context)
     const Group = getModel<IGroup>('Group')
 
-    const { limit, page, name } = validateWhenSearchGroups(payload)
+    const { limit, page, name, userRequestId } = validateWhenSearchGroups(payload)
 
     const query: any = {
       deletedById: { $exists: false },
-      visibility: 'public'
+      $or: [{ visibility: 'public' }, { 'admins.userId': userRequestId }]
     }
 
     if (name) query.name = { $regex: /^J/, $options: 'i' }
@@ -55,11 +55,11 @@ export class GroupsAction {
   }
 
   searchGroupById = async (payload: any) => {
-    const { groupId } = validateWhenSearchGroup(payload)
+    const { groupId, userRequestId } = validateWhenSearchGroup(payload)
 
     const query = {
       deletedById: { $exists: false },
-      visibility: 'public',
+      $or: [{ visibility: 'public' }, { 'admins.userId': userRequestId }],
       _id: groupId
     }
 
@@ -77,7 +77,7 @@ export class GroupsAction {
 
     const query = {
       deletedById: { $exists: false },
-      createdById: userRequestId,
+      'admins.userId': userRequestId,
       _id: groupId
     }
 
@@ -94,7 +94,7 @@ export class GroupsAction {
 
     const query = {
       deletedById: { $exists: false },
-      createdById: userRequestId,
+      'admins.userId': userRequestId,
       _id: groupId
     }
 
