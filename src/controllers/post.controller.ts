@@ -1,9 +1,8 @@
+import { type IContext } from '@hellocacbantre/context'
 import { type IUser } from '@hellocacbantre/db-schemas'
 import { type Request, type Response } from 'express'
 import { PostAction } from '../actions/post.action'
 import catchAsync from '../middlewares/catchAsync'
-import { databaseResponseTimeHistogram } from '../utils/metrics'
-import { type IContext } from '@hellocacbantre/context'
 
 export class PostController {
   private readonly postAction: PostAction
@@ -19,15 +18,8 @@ export class PostController {
       ...req.body,
       createdById: user?._id
     }
-    console.log(
-      '🚀 ~ file: post.controller.ts:19 ~ PostController ~ createPost=catchAsync ~ payload:',
 
-      payload
-    )
     const responses = await this.postAction.createPost(payload)
-
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'create_post', success: 'true' })
 
     return res.json({
       status: 200,
@@ -35,17 +27,14 @@ export class PostController {
     })
   })
 
-  searchPosts = catchAsync(async (req: Request, res: Response) => {
+  newsFeed = catchAsync(async (req: Request, res: Response) => {
     const user = req.user as IUser
 
     const payload = {
       userRequestId: user?._id,
-      ...req.body
+      ...req.query
     }
-    const responses = await this.postAction.searchPosts(payload)
-
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'search_posts', success: 'true' })
+    const responses = await this.postAction.searchNewsFeed(payload)
 
     return res.json({
       status: 200,
@@ -63,27 +52,6 @@ export class PostController {
     }
     const responses = await this.postAction.searchPostsByUserId(payload)
 
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'search_posts_by_user_' + req.params.userId, success: 'true' })
-
-    return res.json({
-      status: 200,
-      data: responses
-    })
-  })
-
-  newsFeed = catchAsync(async (req: Request, res: Response) => {
-    const user = req.user as IUser
-
-    const payload = {
-      userRequestId: user?._id,
-      ...req.body
-    }
-    const responses = await this.postAction.searchNewsFeed(payload)
-
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'news_feed', success: 'true' })
-
     return res.json({
       status: 200,
       data: responses
@@ -95,13 +63,21 @@ export class PostController {
 
     const payload = {
       userRequestId: user?._id,
-      postId: req.params.postId,
-      ...req.body
+      postId: req.params.postId
     }
     const responses = await this.postAction.searchPostById(payload)
 
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'post_by_id', success: 'true' })
+    return res.json({
+      status: 200,
+      data: responses
+    })
+  })
+
+  searchPosts = catchAsync(async (req: Request, res: Response) => {
+    const payload = {
+      ...req.body
+    }
+    const responses = await this.postAction.searchPosts(payload)
 
     return res.json({
       status: 200,
@@ -119,9 +95,6 @@ export class PostController {
     }
     const responses = await this.postAction.updatePostById(payload)
 
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'update_post_by_id', success: 'true' })
-
     return res.json({
       status: 200,
       data: responses
@@ -136,9 +109,6 @@ export class PostController {
       postId: req.params.postId
     }
     const responses = await this.postAction.deletePostById(payload)
-
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'delete_post_by_id', success: 'true' })
 
     return res.json({
       status: 200,
