@@ -2,7 +2,6 @@ import { type IUser } from '@hellocacbantre/db-schemas'
 import { type Request, type Response } from 'express'
 import { CommentAction } from '../actions/comment.action'
 import catchAsync from '../middlewares/catchAsync'
-import { databaseResponseTimeHistogram } from '../utils/metrics'
 import { type IContext } from '@hellocacbantre/context'
 
 export class CommentController {
@@ -23,9 +22,6 @@ export class CommentController {
     }
     const responses = await this.commentAction.createComment(this.context)(payload)
 
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'create_comment', success: 'true' })
-
     return res.json({
       status: 200,
       data: responses
@@ -42,9 +38,6 @@ export class CommentController {
     }
     const responses = await this.commentAction.updateCommentById(this.context)(payload)
 
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'update_comment', success: 'true' })
-
     return res.json({
       status: 200,
       data: responses
@@ -59,9 +52,6 @@ export class CommentController {
       commentId: req.params.commentId
     }
     const responses = await this.commentAction.deleteCommentById(this.context)(payload)
-
-    const timer = databaseResponseTimeHistogram.startTimer()
-    timer({ operation: 'delete_comment', success: 'true' })
 
     return res.json({
       status: 200,

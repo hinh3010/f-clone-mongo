@@ -1,6 +1,7 @@
-FROM node:16-alpine
+FROM node:18-alpine
 
-RUN npm install -g ts-node
+RUN npm install -g yarn
+RUN yarn install -g ts-node
 
 WORKDIR /usr/src/app
 
@@ -8,14 +9,14 @@ COPY package*.json ./
 
 COPY . .
 
-RUN npm install
+RUN yarn
 
 ENV NODE_ENV=production
 
-RUN npm run m:gen -- src/migrations/InitDB
+RUN yarn run m:gen -- src/migrations/InitDB
 
-RUN npm run m:run
+RUN yarn run m:run
 
 EXPOSE 8088
 
-CMD ["npm","start"]
+CMD ["yarn","start"]

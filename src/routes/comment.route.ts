@@ -4,7 +4,7 @@ import { type Request, type Response } from 'express'
 import { CommentController } from '../controllers/comment.controller'
 import { BaseRouter } from './base.router'
 
-const ROUTER_NAME = 'comment'
+const ROUTER_NAME = 'comments'
 
 export class CommentRouter extends BaseRouter {
   private readonly authRole: AuthRole
@@ -23,7 +23,7 @@ export class CommentRouter extends BaseRouter {
       })
     })
 
-    this.router.route('/create').post(this.authRole.isUserActive, this.controller.createComment)
+    this.router.route('/create').post(this.authRole.isUser, this.controller.createComment)
     this.router
       .route('/update/:commentId')
       .put(this.authRole.isUser, this.controller.updateCommentById)
