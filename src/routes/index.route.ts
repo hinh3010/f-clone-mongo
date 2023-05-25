@@ -10,6 +10,7 @@ import { type IContext } from '@hellocacbantre/context'
 import { GroupsRouter } from './groups.route'
 import { PagesRouter } from './pages.route'
 import { CommentRouter } from './comment.route'
+import { ExportRouter } from './export.route'
 
 export class PlatformRouter {
   public routes: Router
@@ -26,6 +27,7 @@ export class PlatformRouter {
     this.routes.use('/groups', new GroupsRouter(this.context).getRouter())
     this.routes.use('/pages', new PagesRouter(this.context).getRouter())
     this.routes.use('/comments', new CommentRouter(this.context).getRouter())
+    this.routes.use('/exports', new ExportRouter(this.context).getRouter())
     // this.routes.use('/tests', new TestsRouter(this.context).getRouter())
     // this.routes.use('/users', new UserRouter(this.context).getRouter())
     // this.routes.use('/likes', new LikeRouter(this.context).getRouter())
