@@ -11,7 +11,47 @@ export const headerSummary = [
   { header: 'Paid', key: 'paid', width: 20 },
   { header: 'Link detail', key: 'link', width: 50 },
   { header: 'Product + Condition + Tier', key: 'condition', width: 50 },
-  { header: 'Description', key: 'description', width: 40 }
+  { header: 'Product Type', key: 'productType', width: 40 },
+  { header: 'Cashback', key: 'cashback', width: 40 }
+]
+
+const details = [
+  {
+    productType: 'CUSTOM_ORNAMENT_1D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_2D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_3D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_4D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_5D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_6D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_7D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_8D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  },
+  {
+    productType: 'CUSTOM_ORNAMENT_9D',
+    cashback: 'Tier 3-reduce $0.2/unit'
+  }
 ]
 
 export const summaryStatistic = [
@@ -23,17 +63,7 @@ export const summaryStatistic = [
     paid: '$80.9',
     link: 'link.csv.detail.store',
     condition: 'Offer of CPH, tier max does not require volume, apply for an additional 9 months from September 2022 to May 2023',
-    description: [
-      'CUSTOM_ORNAMENT_1D',
-      'CUSTOM_ORNAMENT_2D',
-      'CUSTOM_ORNAMENT_3D',
-      'CUSTOM_ORNAMENT_4D',
-      'CUSTOM_ORNAMENT_5D',
-      'CUSTOM_ORNAMENT_6D',
-      'CUSTOM_ORNAMENT_7D',
-      'CUSTOM_ORNAMENT_8D',
-      'CUSTOM_ORNAMENT_9D'
-    ]
+    details
   },
   {
     storeId: 'storeId',
@@ -43,17 +73,7 @@ export const summaryStatistic = [
     paid: '$80.9',
     link: 'link.csv.detail.store',
     condition: 'Offer of CPH, tier max does not require volume, apply for an additional 9 months from September 2022 to May 2023',
-    description: [
-      'CUSTOM_ORNAMENT_1D',
-      'CUSTOM_ORNAMENT_2D',
-      'CUSTOM_ORNAMENT_3D',
-      'CUSTOM_ORNAMENT_4D',
-      'CUSTOM_ORNAMENT_5D',
-      'CUSTOM_ORNAMENT_6D',
-      'CUSTOM_ORNAMENT_7D',
-      'CUSTOM_ORNAMENT_8D',
-      'CUSTOM_ORNAMENT_9D'
-    ]
+    details
   },
   {
     storeId: 'storeId',
@@ -63,7 +83,7 @@ export const summaryStatistic = [
     paid: '$80.9',
     link: 'link.csv.detail.store',
     condition: 'Offer of CPH, tier max does not require volume, apply for an additional 9 months from September 2022 to May 2023',
-    description: ['CUSTOM_ORNAMENT_1D']
+    details: [details[0], details[1]]
   },
   {
     storeId: 'storeId',
@@ -73,22 +93,12 @@ export const summaryStatistic = [
     paid: '$80.9',
     link: 'link.csv.detail.store',
     condition: 'Offer of CPH, tier max does not require volume, apply for an additional 9 months from September 2022 to May 2023',
-    description: [
-      'CUSTOM_ORNAMENT_1D',
-      'CUSTOM_ORNAMENT_2D',
-      'CUSTOM_ORNAMENT_3D',
-      'CUSTOM_ORNAMENT_4D',
-      'CUSTOM_ORNAMENT_5D',
-      'CUSTOM_ORNAMENT_6D',
-      'CUSTOM_ORNAMENT_7D',
-      'CUSTOM_ORNAMENT_8D',
-      'CUSTOM_ORNAMENT_9D'
-    ]
+    details: [details[0]]
   }
 ]
 
 export const headerStore = [
-  { header: 'Store', key: 'store', width: 10 },
+  { header: 'Store', key: 'store', width: 20 },
   { header: 'Order number', key: 'orderCode', width: 20 },
   { header: 'Package number', key: 'totalFulfillment', width: 20 },
   { header: 'Product type', key: 'productType', width: 20 },

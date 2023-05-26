@@ -7,10 +7,11 @@ interface IExportAction {
 }
 
 interface IOptionStyleSheet {
-  rowNumber?: number
-  fgColor?: string
   bgColor?: string
   borderColor?: string
+  textColor?: string
+  height?: number
+  isApply?: boolean
 }
 
 interface IOptionCreateSheet {
@@ -20,29 +21,70 @@ interface IOptionCreateSheet {
   isMerge?: boolean
 }
 
+interface IOptionStyleCell {
+  bgColor?: string
+  borderColor?: string
+  textColor?: string
+}
+
 export class ExportAction implements IExportAction {
-  private readonly styleSheet = (worksheet: Excel.Worksheet, options: IOptionStyleSheet) => {
-    const { rowNumber = 1, fgColor, bgColor, borderColor } = options ?? {}
+  private readonly styleCell = (cell: Excel.Cell, options: IOptionStyleCell) => {
+    const { bgColor, borderColor, textColor } = options ?? {}
 
     // Set color for row, default for header
-    worksheet.getRow(rowNumber).eachCell((cell: Excel.Cell) => {
-      if (bgColor ?? fgColor) {
-        cell.fill = {
-          type: 'pattern',
-          pattern: 'solid',
-          fgColor: { argb: fgColor },
-          bgColor: { argb: bgColor }
-        }
+    if (bgColor) {
+      cell.fill = {
+        type: 'pattern',
+        pattern: 'solid',
+        fgColor: { argb: bgColor },
+        bgColor: { argb: bgColor }
       }
-      if (borderColor) {
-        cell.border = {
-          top: { style: 'thin', color: { argb: borderColor } },
-          left: { style: 'thin', color: { argb: borderColor } },
-          bottom: { style: 'thin', color: { argb: borderColor } },
-          right: { style: 'thin', color: { argb: borderColor } }
-        }
+    }
+
+    if (borderColor) {
+      cell.border = {
+        top: { style: 'thin', color: { argb: borderColor } },
+        left: { style: 'thin', color: { argb: borderColor } },
+        bottom: { style: 'thin', color: { argb: borderColor } },
+        right: { style: 'thin', color: { argb: borderColor } }
       }
-    })
+    }
+
+    if (textColor) {
+      cell.font = {
+        color: { argb: textColor }
+      }
+    }
+
+    return cell
+  }
+
+  private readonly styleSheet = (row: Excel.Row, options: IOptionStyleSheet) => {
+    const { bgColor, borderColor, height, textColor, isApply = true } = options ?? {}
+
+    // Set color for row,
+    if (isApply) {
+      row.eachCell((cell: Excel.Cell) => {
+        if (bgColor) {
+          this.styleCell(cell, { bgColor })
+        }
+        if (borderColor) {
+          this.styleCell(cell, { borderColor })
+        }
+
+        if (textColor) {
+          this.styleCell(cell, { textColor })
+        }
+      })
+    }
+
+    if (height) row.height = 30
+
+    row.alignment = {
+      vertical: 'middle',
+      horizontal: 'left',
+      wrapText: true
+    }
   }
 
   private readonly createSheet = (workbook: Excel.Workbook, options: IOptionCreateSheet) => {
@@ -54,39 +96,41 @@ export class ExportAction implements IExportAction {
     // add columns
     worksheet.columns = columns
 
+    // Set color for header
+    this.styleSheet(worksheet.getRow(1), { bgColor: '40bff5', borderColor: '000000', height: 20 })
+
     // add rows
     if (isMerge) {
       data.forEach((rowData) => {
-        const { description, storeId, URL, time, cashback, paid, link, condition } = rowData
-        const descriptionCount: number = description.length
+        const { details, ...other } = rowData
+        const detailsCount: number = details.length
         const startIndex: number = worksheet.rowCount + 1
-        const endIndex = startIndex + descriptionCount - 1
+        const endIndex = startIndex + detailsCount - 1
 
-        worksheet.addRow({ storeId, URL, time, cashback, paid, link, condition, description: description[0] })
-        for (let i = 1; i < descriptionCount; i++) {
-          worksheet.addRow({ description: description[i] })
+        worksheet.addRow({ ...other, productType: details[0].productType, cashback: details[0].cashback })
+        for (let i = 1; i < detailsCount; i++) {
+          worksheet.addRow({ productType: details[i].productType, cashback: details[i].cashback })
         }
 
         // merge cells for the current group of rows
         const keysLength = Object.keys(rowData).length
         for (let i = 0; i < keysLength; i++) {
           const currPosition = i + 1
+
           if (currPosition === keysLength) return
+
           worksheet.mergeCells(startIndex, currPosition, endIndex, currPosition)
+
           worksheet.getCell(startIndex, currPosition).alignment = { horizontal: 'left', vertical: 'middle', wrapText: true }
         }
       })
     } else {
-      data.forEach((rowData) => {
+      data.forEach((rowData, i) => {
         const row = worksheet.addRow(rowData)
-        row.eachCell((cell) => {
-          cell.alignment = { horizontal: 'left', vertical: 'top', wrapText: true }
-        })
+        // Set color for row
+        this.styleSheet(row, { bgColor: 'eeeeee', borderColor: '000000', isApply: i % 2 !== 0 })
       })
     }
-
-    // Set color for header
-    this.styleSheet(worksheet, { fgColor: 'FF0070C0', bgColor: 'FF0070C0', borderColor: 'FF00FF00' })
 
     return worksheet
   }
