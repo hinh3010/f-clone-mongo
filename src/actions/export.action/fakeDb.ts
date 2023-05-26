@@ -128,5 +128,63 @@ export const storesStatistic = [
         cashback: 0.5
       }
     ]
+  },
+  {
+    id: 'adu1',
+    statistic: [
+      {
+        store: 'namespace + url',
+        orderCode: 'RP-73522-59997',
+        totalFulfillment: 2,
+        productType: 'T-SHIRT_PU',
+        quantity: 2,
+        buyerPaidAt: '3/31/2023 2:00:41',
+        sellerPaidAt: '3/31/2023 2:00:41',
+        discountAmount: 1,
+        countryCode: 'US',
+        cashback: 0.5
+      },
+      {
+        store: 'namespace + url',
+        orderCode: 'RP-73522-59997',
+        totalFulfillment: 2,
+        productType: 'T-SHIRT_PU',
+        quantity: 2,
+        buyerPaidAt: '3/31/2023 2:00:41',
+        sellerPaidAt: '3/31/2023 2:00:41',
+        discountAmount: 1,
+        countryCode: 'US',
+        cashback: 0.5
+      }
+    ]
+  },
+  {
+    id: 'adu2',
+    statistic: [
+      {
+        store: 'namespace + url',
+        orderCode: 'RP-73522-59997',
+        totalFulfillment: 2,
+        productType: 'T-SHIRT_PU',
+        quantity: 2,
+        buyerPaidAt: '3/31/2023 2:00:41',
+        sellerPaidAt: '3/31/2023 2:00:41',
+        discountAmount: 1,
+        countryCode: 'US',
+        cashback: 0.5
+      },
+      {
+        store: 'namespace + url',
+        orderCode: 'RP-73522-59997',
+        totalFulfillment: 2,
+        productType: 'T-SHIRT_PU',
+        quantity: 2,
+        buyerPaidAt: '3/31/2023 2:00:41',
+        sellerPaidAt: '3/31/2023 2:00:41',
+        discountAmount: 1,
+        countryCode: 'US',
+        cashback: 0.5
+      }
+    ]
   }
 ]
