@@ -12,5 +12,6 @@ export class ExportRouter extends BaseRouter {
 
   protected configureRoutes(): void {
     this.router.route('/excel').get(this.controller.exportExcel)
+    this.router.route('/csv').get(this.controller.exportCsv)
   }
 }

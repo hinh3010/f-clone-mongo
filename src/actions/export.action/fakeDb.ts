@@ -5,14 +5,14 @@ export const data = [
 
 export const headerSummary = [
   { header: 'Store ID', key: 'storeId', width: 10 },
-  { header: 'URL', key: 'URL', width: 20 },
-  { header: 'Time', key: 'time', width: 20 },
+  { header: 'Store URL', key: 'URL', width: 20 },
   { header: 'Cashback', key: 'cashback', width: 20 },
-  { header: 'Paid', key: 'paid', width: 20 },
-  { header: 'Link detail', key: 'link', width: 50 },
   { header: 'Product + Condition + Tier', key: 'condition', width: 50 },
-  { header: 'Product Type', key: 'productType', width: 40 },
-  { header: 'Cashback', key: 'cashback', width: 40 }
+  { header: 'Link detail', key: 'link', width: 50 }
+  // { header: 'Time', key: 'time', width: 20 },
+  // { header: 'Paid', key: 'paid', width: 20 },
+  // { header: 'Product Type', key: 'productType', width: 40 },
+  // { header: 'Cashback Detail', key: 'cashbackDetail', width: 40 }
 ]
 
 const details = [
@@ -100,101 +100,52 @@ export const summaryStatistic = [
 export const headerStore = [
   { header: 'Store', key: 'store', width: 20 },
   { header: 'Order number', key: 'orderCode', width: 20 },
-  { header: 'Package number', key: 'totalFulfillment', width: 20 },
-  { header: 'Product type', key: 'productType', width: 20 },
-  { header: 'Quantity', key: 'quantity', width: 20 },
   { header: 'Buyer Paid At', key: 'buyerPaidAt', width: 20 },
   { header: 'Seller Paid At', key: 'sellerPaidAt', width: 20 },
+  { header: 'Product type', key: 'productType', width: 20 },
+  { header: 'Variant Title', key: 'variantTitle', width: 20 },
+  { header: 'Variant Fulfill', key: 'variantFulfill', width: 20 },
+  { header: 'Quantity', key: 'quantity', width: 20 },
+  { header: 'Cashback', key: 'cashback', width: 20 },
+  { header: 'Shipping Cost', key: 'shippingCost', width: 20 },
+  { header: 'Base Price', key: 'basePrice', width: 20 },
+  { header: 'Fulfillment Cost', key: 'fulfillmentCost', width: 20 },
+  { header: 'Two Sided Cost', key: 'twoSidedCost', width: 20 },
   { header: 'Discount Amount', key: 'discountAmount', width: 20 },
   { header: 'Country Code', key: 'countryCode', width: 20 },
-  { header: 'Cashback', key: 'cashback', width: 20 }
+  { header: 'Supplier', key: 'supplier', width: 20 }
 ]
+
+const store = {
+  store: 'namespace + url',
+  orderCode: 'RP-73522-59997',
+  buyerPaidAt: '3/31/2023 2:00:41',
+  sellerPaidAt: '3/31/2023 2:00:41',
+  productType: 'T-SHIRT_PU',
+  variantFulfill: 'T-SHIRT_PU',
+  variantTitle: 'T-SHIRT_PU',
+  quantity: 2,
+  cashback: 0.5,
+  shippingCost: 'US',
+  basePrice: 5,
+  fulfillmentCost: 'fulfillmentCost',
+  twoSidedCost: 'twoSidedCost',
+  discountAmount: 1,
+  countryCode: 'US',
+  supplier: 'supplier'
+}
+
 export const storesStatistic = [
   {
     id: 'adu',
-    statistic: [
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      },
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      }
-    ]
+    statistic: [store, store, store, store, store, store, store, store, store, store, store, store, store]
   },
   {
     id: 'adu1',
-    statistic: [
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      },
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      }
-    ]
+    statistic: [store, store, store, store, store, store, store, store, store, store, store, store, store]
   },
   {
     id: 'adu2',
-    statistic: [
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      },
-      {
-        store: 'namespace + url',
-        orderCode: 'RP-73522-59997',
-        totalFulfillment: 2,
-        productType: 'T-SHIRT_PU',
-        quantity: 2,
-        buyerPaidAt: '3/31/2023 2:00:41',
-        sellerPaidAt: '3/31/2023 2:00:41',
-        discountAmount: 1,
-        countryCode: 'US',
-        cashback: 0.5
-      }
-    ]
+    statistic: [store, store, store, store, store, store, store, store, store, store, store, store, store]
   }
 ]

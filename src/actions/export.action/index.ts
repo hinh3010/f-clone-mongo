@@ -1,6 +1,7 @@
 import { type IContext } from '@hellocacbantre/context'
 import Excel from 'exceljs'
 import { headerStore, headerSummary, storesStatistic, summaryStatistic } from './fakeDb'
+import { sellerHeader, sellerStatistic } from './fakeDbCsv'
 
 interface IExportAction {
   exportExcel: (context: IContext) => () => Promise<Excel.Workbook>
@@ -107,9 +108,9 @@ export class ExportAction implements IExportAction {
         const startIndex: number = worksheet.rowCount + 1
         const endIndex = startIndex + detailsCount - 1
 
-        worksheet.addRow({ ...other, productType: details[0].productType, cashback: details[0].cashback })
+        worksheet.addRow({ ...other, productType: details[0].productType, cashbackDetail: details[0].cashback })
         for (let i = 1; i < detailsCount; i++) {
-          worksheet.addRow({ productType: details[i].productType, cashback: details[i].cashback })
+          worksheet.addRow({ productType: details[i].productType, cashbackDetail: details[i].cashback })
         }
 
         // merge cells for the current group of rows
@@ -153,6 +154,21 @@ export class ExportAction implements IExportAction {
           columns: headerStore,
           data: store.statistic
         })
+      })
+
+      return workbook
+    }
+  }
+
+  public exportCsv(context: IContext) {
+    return async () => {
+      // initialize the workbook
+      const workbook = new Excel.Workbook()
+      const worksheet = workbook.addWorksheet('My Sheet')
+
+      worksheet.addRow(sellerHeader)
+      sellerStatistic.forEach((statistic) => {
+        worksheet.addRow([statistic.store, statistic.orderCode, statistic.buyerPaidAt, statistic.sellerPaidAt, statistic.productType, statistic.variantTitle, statistic.quantity, statistic.cashback])
       })
 
       return workbook
