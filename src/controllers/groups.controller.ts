@@ -34,6 +34,7 @@ export class GroupsController {
       userRequestId: user?._id,
       ...req.query
     }
+
     const responses = await this.postAction.searchGroups(payload)
 
     return res.json({

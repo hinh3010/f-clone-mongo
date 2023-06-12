@@ -4,7 +4,7 @@ import { GROUP_ADMIN_ROLE } from '@hellocacbantre/db-schemas/dist/enums/group.en
 import createError from 'http-errors'
 import { getStoreDb } from '../../connections/mongo.db'
 import { fetchGroup, fetchGroups } from './service'
-import { validateBeforeCreateGroup, validateBeforeUpdateGroup, validateWhenDeleteGroup, validateWhenSearchGroup, validateWhenSearchGroups } from './validations'
+import { TYPE_SEARCH, validateBeforeCreateGroup, validateBeforeUpdateGroup, validateWhenDeleteGroup, validateWhenSearchGroup, validateWhenSearchGroups } from './validations'
 
 export class GroupsAction {
   private readonly context: IContext
@@ -36,13 +36,19 @@ export class GroupsAction {
     const { getModel } = getStoreDb(this.context)
     const Group = getModel<IGroup>('Group')
 
-    const { limit, page, name, userRequestId } = validateWhenSearchGroups(payload)
+    const { limit, page, name, userRequestId, typeSearch } = validateWhenSearchGroups(payload)
 
     const query: any = {
-      deletedById: { $exists: false },
-      $or: [{ visibility: 'public' }, { 'admins.userId': userRequestId }]
+      deletedById: { $exists: false }
     }
 
+    if (typeSearch === TYPE_SEARCH.MY_GROUPS) query['admins.userId'] = userRequestId
+    else if (typeSearch === TYPE_SEARCH.GROUPS_JOINED) {
+      query['admins.userId'] = userRequestId // { $ne: userRequestId }
+    } else if (typeSearch === TYPE_SEARCH.OTHER_GROUPS) {
+      query.visibility = 'public'
+      query['admins.userId'] = { $ne: userRequestId }
+    }
     if (name) query.name = { $regex: /^J/, $options: 'i' }
 
     const totalGroups = await Group.countDocuments(query)

@@ -70,18 +70,27 @@ export const validateBeforeUpdateGroup = (payload: ISchemaBeforeUpdateGroup): IS
   return value
 }
 
+export enum TYPE_SEARCH {
+  MY_GROUPS = 'my_groups',
+  GROUPS_JOINED = 'groups_joined',
+  OTHER_GROUPS = 'other_groups'
+}
 interface ISchemaWhenSearchGroups {
   page: number
   limit: number
   name: string
   userRequestId: ObjectId
+  typeSearch: TYPE_SEARCH
 }
 export const validateWhenSearchGroups = (payload: ISchemaWhenSearchGroups): ISchemaWhenSearchGroups => {
   const schema = Joi.object({
     page: Joi.number().default(1).min(1),
     name: Joi.string().optional(),
     limit: Joi.number().default(10).min(1),
-    userRequestId: Joi.custom(_customValidate.objectId).optional()
+    userRequestId: Joi.custom(_customValidate.objectId).optional(),
+    typeSearch: Joi.string()
+      .valid(...Object.values(TYPE_SEARCH))
+      .default(TYPE_SEARCH.OTHER_GROUPS)
   })
 
   const { error, value } = schema.validate(payload)
