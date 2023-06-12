@@ -29,7 +29,7 @@ interface IOptionStyleCell {
 }
 
 export class ExportAction implements IExportAction {
-  private readonly styleCell = (cell: Excel.Cell, options: IOptionStyleCell) => {
+  private readonly _styleCell = (cell: Excel.Cell, options: IOptionStyleCell) => {
     const { bgColor, borderColor, textColor } = options ?? {}
 
     // Set color for row, default for header
@@ -60,21 +60,21 @@ export class ExportAction implements IExportAction {
     return cell
   }
 
-  private readonly styleSheet = (row: Excel.Row, options: IOptionStyleSheet) => {
+  private readonly _styleSheet = (row: Excel.Row, options: IOptionStyleSheet) => {
     const { bgColor, borderColor, height, textColor, isApply = true } = options ?? {}
 
     // Set color for row,
     if (isApply) {
       row.eachCell((cell: Excel.Cell) => {
         if (bgColor) {
-          this.styleCell(cell, { bgColor })
+          this._styleCell(cell, { bgColor })
         }
         if (borderColor) {
-          this.styleCell(cell, { borderColor })
+          this._styleCell(cell, { borderColor })
         }
 
         if (textColor) {
-          this.styleCell(cell, { textColor })
+          this._styleCell(cell, { textColor })
         }
       })
     }
@@ -88,7 +88,7 @@ export class ExportAction implements IExportAction {
     }
   }
 
-  private readonly createSheet = (workbook: Excel.Workbook, options: IOptionCreateSheet) => {
+  private readonly _createSheet = (workbook: Excel.Workbook, options: IOptionCreateSheet) => {
     const { sheetName, columns, data, isMerge } = options ?? {}
 
     // create the worksheet
@@ -98,7 +98,7 @@ export class ExportAction implements IExportAction {
     worksheet.columns = columns
 
     // Set color for header
-    this.styleSheet(worksheet.getRow(1), { bgColor: '40bff5', borderColor: '000000', height: 20 })
+    this._styleSheet(worksheet.getRow(1), { bgColor: '40bff5', borderColor: '000000', height: 20 })
 
     // add rows
     if (isMerge) {
@@ -129,7 +129,7 @@ export class ExportAction implements IExportAction {
       data.forEach((rowData, i) => {
         const row = worksheet.addRow(rowData)
         // Set color for row
-        this.styleSheet(row, { bgColor: 'eeeeee', borderColor: '000000', isApply: i % 2 !== 0 })
+        this._styleSheet(row, { bgColor: 'eeeeee', borderColor: '000000', isApply: i % 2 !== 0 })
       })
     }
 
@@ -141,7 +141,7 @@ export class ExportAction implements IExportAction {
       // initialize the workbook
       const workbook = new Excel.Workbook()
 
-      this.createSheet(workbook, {
+      this._createSheet(workbook, {
         sheetName: 'Summary',
         columns: headerSummary,
         data: summaryStatistic,
@@ -149,7 +149,7 @@ export class ExportAction implements IExportAction {
       })
 
       storesStatistic.forEach((store) => {
-        this.createSheet(workbook, {
+        this._createSheet(workbook, {
           sheetName: store.id,
           columns: headerStore,
           data: store.statistic
