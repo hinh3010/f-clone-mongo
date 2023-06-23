@@ -49,6 +49,7 @@ export class GroupsAction {
       query.visibility = 'public'
       query['admins.userId'] = { $ne: userRequestId }
     }
+
     if (name) query.name = { $regex: /^J/, $options: 'i' }
 
     const totalGroups = await Group.countDocuments(query)
