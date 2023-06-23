@@ -39,7 +39,7 @@ export class LikeController {
       ...req.body,
       createdById: user?._id
     }
-    const responses = await this.likeAction.like(this.context)(payload)
+    const responses = await this.likeAction.dislike(this.context)(payload)
 
     const timer = databaseResponseTimeHistogram.startTimer()
     timer({ operation: 'dislike', success: 'true' })

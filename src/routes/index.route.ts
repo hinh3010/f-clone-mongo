@@ -3,14 +3,13 @@ import { AuthRouter } from '@hellocacbantre/services-auth'
 import { Router, type Request, type Response } from 'express'
 import { Env } from '../config'
 import { PostRouter } from './post.route'
-// import { CommentRouter } from './comment.route'
-// import { LikeRouter } from './like.route'
-// import { TestsRouter } from './test.route'
-// import { UserRouter } from './user.route'
+import { LikeRouter } from './like.route'
+import { TestsRouter } from './test.route'
 import { type IContext } from '@hellocacbantre/context'
 import { GroupsRouter } from './groups.route'
 import { PagesRouter } from './pages.route'
 import { CommentRouter } from './comment.route'
+import { UserRouter } from './user.route'
 
 export class PlatformRouter {
   public routes: Router
@@ -27,9 +26,9 @@ export class PlatformRouter {
     this.routes.use('/groups', new GroupsRouter(this.context).getRouter())
     this.routes.use('/pages', new PagesRouter(this.context).getRouter())
     this.routes.use('/comments', new CommentRouter(this.context).getRouter())
-    // this.routes.use('/tests', new TestsRouter(this.context).getRouter())
-    // this.routes.use('/users', new UserRouter(this.context).getRouter())
-    // this.routes.use('/likes', new LikeRouter(this.context).getRouter())
+    this.routes.use('/tests', new TestsRouter(this.context).getRouter())
+    this.routes.use('/users', new UserRouter(this.context).getRouter())
+    this.routes.use('/likes', new LikeRouter(this.context).getRouter())
 
     this.routes.get('/', (req: Request, res: Response) => {
       res.json({
