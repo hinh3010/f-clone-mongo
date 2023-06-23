@@ -21,26 +21,18 @@ const _attachmentSchema = Joi.object({
 
 export const validateBeforeCreateComment = (payload: IComment) => {
   const schema = Joi.object<IComment>({
+    content: Joi.string().optional(),
+    attachments: _attachmentSchema,
     entityId: Joi.custom(_customValidations.objectId).required(),
     entityType: Joi.string()
       .valid(...Object.values(COMMENT_ENTITY_TYPE))
       .required(),
-
-    parentId: Joi.custom(_customValidations.objectId).allow(null).default(null).optional(),
-    level: Joi.number().when('parentId', {
-      is: Joi.exist().not(null),
-      then: Joi.number().min(1).max(3).optional(),
-      otherwise: Joi.number().valid(0).optional()
-    }),
-    content: Joi.string().optional(),
-    attachments: Joi.array()
-      .items(_attachmentSchema)
-      .custom((value, helpers: any) => {
-        if (!value?.length) {
-          return helpers.message('"attachments" must not be an empty array')
-        }
-        return value
-      }),
+    // parentId: Joi.custom(_customValidations.objectId).allow(null).default(null).optional(),
+    // level: Joi.number().when('parentId', {
+    //   is: Joi.exist().not(null),
+    //   then: Joi.number().min(1).max(3).optional(),
+    //   otherwise: Joi.number().valid(0).optional()
+    // }),
     tags: Joi.array().items(Joi.custom(_customValidations.objectId)).optional(),
     hashTags: Joi.array().items(Joi.string()).optional(),
     createdById: Joi.custom(_customValidations.objectId).required()

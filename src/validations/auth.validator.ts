@@ -1,10 +1,9 @@
 import Joi from 'joi'
-import { password } from './custom.validator'
 
 const register = {
   body: Joi.object().keys({
     email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
+    password: Joi.string().required(),
     name: Joi.string().required()
   })
 }
@@ -39,7 +38,7 @@ const resetPassword = {
     token: Joi.string().required()
   }),
   body: Joi.object().keys({
-    password: Joi.string().required().custom(password)
+    password: Joi.string().required()
   })
 }
 
